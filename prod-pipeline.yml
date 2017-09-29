@@ -265,7 +265,8 @@ jobs:
           DEPLOYMENT_USER: ((prod-pipeline-cfuser))
           DEPLOYMENT_PWD: ((prod-pipeline-password))
           SLACK_WEBHOOK_URL: ((slack-webhook-url))
-          BUILD_TARGET: production
+          #TODO update this value to production
+          BUILD_TARGET: uat
           #TODO update the secrets file for correct values
           CF_API_ZONE_URL: ((cf-api-prod-zonea))
           CF_ORG: ((cf-org-prod))
@@ -315,11 +316,12 @@ jobs:
           DEPLOYMENT_USER: ((prod-pipeline-cfuser))
           DEPLOYMENT_PWD: ((prod-pipeline-password))
           SLACK_WEBHOOK_URL: ((slack-webhook-url))
-          BUILD_TARGET: production
+          #TODO update this value to production
+          BUILD_TARGET: uat
           #TODO update the secrets file for correct values
           CF_API_ZONE_URL: ((cf-api-prod-zoneb))
           CF_ORG: ((cf-org-prod))
-          CF_SPACE: ((cf-space-prodza))
+          CF_SPACE: ((cf-space-prodzb))
     on_failure:
       aggregate:
       - put: slack
