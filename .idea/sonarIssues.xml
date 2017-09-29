@@ -18,12 +18,37 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/concourse/cloud_foundry_deploy_llc.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/concourse/cloud_foundry_deploy_prod.yml">
           <value>
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/concourse/func_int_servicetest.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/concourse/func_int_test.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/concourse/locksmith.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/iom-dct-apps-dev.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/iom-dct-apps-llc-pip.yml">
           <value>
             <set />
           </value>
@@ -39,6 +64,16 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/scripts/cloud_foundry_deploy_prod.sh">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/scripts/func-servicetest.sh">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/scripts/func-test.sh">
           <value>
             <set />
           </value>

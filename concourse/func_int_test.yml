@@ -3,13 +3,15 @@ platform: linux
 image_resource:
   source: {repository: weremsoft/gulp-xvfb-headless-chrome-protractor}
   type: docker-image
+
 inputs:
-- name: code-repo-dct
+  - name: code-repo
+  - name: ci
+
 
 outputs:
 - name: tests
 
 run:
-  args:
-    - ./code-repo-dct/iom-concourse/scripts/func-test.sh
-  path: sh
+  dir: ci
+  path: ./scripts/func-test.sh
