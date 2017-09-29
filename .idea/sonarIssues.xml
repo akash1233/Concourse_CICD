@@ -23,6 +23,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/scripts/artifactory_upload_artifact.sh">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/scripts/cloud_foundry_deploy_prod.sh">
           <value>
             <set />

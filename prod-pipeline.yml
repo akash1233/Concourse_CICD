@@ -282,7 +282,8 @@ jobs:
           DEPLOYMENT_PWD: ((prod-pipeline-password))
           SLACK_WEBHOOK_URL: ((slack-webhook-url))
           CF_API_ZONE_URL: ((cf-api-prod-zonea))
-          BUILD_TARGET: uat
+
+          BUILD_TARGET: uat #TODO Update this
           CF_ORG: ((cf-org-prod))
           #         TODO update this
           CF_SPACE: ((cf-space-prodza))
@@ -335,7 +336,7 @@ jobs:
           DEPLOYMENT_PWD: ((prod-pipeline-password))
           SLACK_WEBHOOK_URL: ((slack-webhook-url))
           CF_API_ZONE_URL: ((cf-api-prod-zoneb))
-          BUILD_TARGET: uat
+          BUILD_TARGET: uat #TODO Update this
           CF_ORG: ((cf-org-prod))
            #         TODO update this
           CF_SPACE: ((cf-space-prodzb))
