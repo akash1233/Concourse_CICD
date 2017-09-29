@@ -1,0 +1,14 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: docker.artifactory.homedepot.com/flow/rubymysql
+    tag: "latest"
+inputs:
+  - name: ci
+  - name: code-repo
+run:
+  dir: code-repo
+  path: ../ci/scripts/rake_test.sh
+outputs:
+  - name: test

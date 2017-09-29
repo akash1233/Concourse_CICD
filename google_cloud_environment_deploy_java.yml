@@ -1,0 +1,14 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: docker.artifactory.homedepot.com/google/gsutil-uploader
+    tag: "latest"
+inputs:
+  - name: ci
+  - name: code-repo
+  - name: deployments-repo
+  - name: flow-repo
+run:
+  dir: code-repo
+  path: ../ci/scripts/google_cloud_environment_deploy.sh

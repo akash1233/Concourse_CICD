@@ -1,0 +1,15 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: docker.artifactory.homedepot.com/flow/java
+    tag: "latest"
+inputs:
+  - name: ci
+  - name: code-repo
+  - name: deployments-repo
+run:
+  dir: code-repo
+  path: ../ci/scripts/snowfield_create_cr.sh
+outputs:
+  - name: updated-git

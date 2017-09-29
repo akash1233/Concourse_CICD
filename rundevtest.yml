@@ -1,0 +1,17 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: akash1233/devtest-ant
+    tag: stable
+    registry_mirror: https://docker.artifactory.homedepot.com
+inputs:
+  - name: ci
+  - name: code-repo
+
+outputs:
+- name: test
+
+run:
+  dir: code-repo
+  path: ../ci/scripts/func_int_devtest.sh
