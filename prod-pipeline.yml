@@ -3,10 +3,10 @@ resources:
   type: git
   source: &code-repo-cache-dct
     uri: git@github.homedepot.com:SupplyChain-IPR/iom-dct-apps.git
+    #TODO update the branch name
     branch: production-pipeline
     private_key: ((github-private-key))
   check_every: 10m
-
 
 - name: repo-cache-dct
   type: gradle-cache
@@ -54,23 +54,6 @@ resource_types:
       tag: latest
       registry_mirror: https://docker.artifactory.homedepot.com
 
-
-
-#groups:
-# - name: createcr
-#   jobs:
-#   - Version
-#   - Label Stories
-#   - Build Artifact
-#   - Create CR
-#
-#
-# - name: deploy
-#   jobs:
-#   - Locksmith
-#   - Deploy
-#   - Close CR
-#   - Release Notes
 
 
 jobs:
@@ -209,6 +192,7 @@ jobs:
       GITHUB_TOKEN: {{github-token}}
       ENVIRONMENT: production
       SLACK_WEBHOOK_URL: {{slack-webhook-url}}
+      #TODO comment this line for executing in production
       LOCKSMITH_URL: https://locksmith-mock.apps-np.homedepot.com/api/grants
     on_failure:
       aggregate:
@@ -281,15 +265,11 @@ jobs:
           DEPLOYMENT_USER: ((prod-pipeline-cfuser))
           DEPLOYMENT_PWD: ((prod-pipeline-password))
           SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          BUILD_TARGET: production
+          #TODO update the secrets file for correct values
           CF_API_ZONE_URL: ((cf-api-prod-zonea))
-           #TODO Update this
-          BUILD_TARGET: uat
           CF_ORG: ((cf-org-prod))
-          #         TODO update this
           CF_SPACE: ((cf-space-prodza))
-#          DB2_FULL_URL: ((prod-db2-url))
-#          TERADATA_FULL_URL: ((prod-td-url))
-#          ORACLE_FULL_URL: ((prod-oracle-url))
     on_failure:
       aggregate:
       - put: slack
@@ -335,15 +315,11 @@ jobs:
           DEPLOYMENT_USER: ((prod-pipeline-cfuser))
           DEPLOYMENT_PWD: ((prod-pipeline-password))
           SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          BUILD_TARGET: production
+          #TODO update the secrets file for correct values
           CF_API_ZONE_URL: ((cf-api-prod-zoneb))
-          #TODO Update this
-          BUILD_TARGET: uat
           CF_ORG: ((cf-org-prod))
-           #         TODO update this
-          CF_SPACE: ((cf-space-prodzb))
-#          DB2_FULL_URL: ((prod-db2-url))
-#          TERADATA_FULL_URL: ((prod-td-url))
-#          ORACLE_FULL_URL: ((prod-oracle-url))
+          CF_SPACE: ((cf-space-prodza))
     on_failure:
       aggregate:
       - put: slack
