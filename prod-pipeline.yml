@@ -149,7 +149,7 @@ jobs:
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: Upload to Artifactory
     file: ci-iom/concourse/artifactory_upload_artifact.yml
-    input_mapping: {code-repo: code-repo-dct, dist: dist}
+    input_mapping: {code-repo: code-repo-dct, dist: dist , ci: ci-iom}
     params:
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
@@ -282,12 +282,13 @@ jobs:
           DEPLOYMENT_PWD: ((prod-pipeline-password))
           SLACK_WEBHOOK_URL: ((slack-webhook-url))
           CF_API_ZONE_URL: ((cf-api-prod-zonea))
+          BUILD_TARGET: uat
           CF_ORG: ((cf-org-prod))
           #         TODO update this
           CF_SPACE: ((cf-space-prodza))
-          DB2_FULL_URL: ((prod-db2-url))
-          TERADATA_FULL_URL: ((prod-td-url))
-          ORACLE_FULL_URL: ((prod-oracle-url))
+#          DB2_FULL_URL: ((prod-db2-url))
+#          TERADATA_FULL_URL: ((prod-td-url))
+#          ORACLE_FULL_URL: ((prod-oracle-url))
     on_failure:
       aggregate:
       - put: slack
@@ -334,12 +335,13 @@ jobs:
           DEPLOYMENT_PWD: ((prod-pipeline-password))
           SLACK_WEBHOOK_URL: ((slack-webhook-url))
           CF_API_ZONE_URL: ((cf-api-prod-zoneb))
+          BUILD_TARGET: uat
           CF_ORG: ((cf-org-prod))
            #         TODO update this
           CF_SPACE: ((cf-space-prodzb))
-          DB2_FULL_URL: ((prod-db2-url))
-          TERADATA_FULL_URL: ((prod-td-url))
-          ORACLE_FULL_URL: ((prod-oracle-url))
+#          DB2_FULL_URL: ((prod-db2-url))
+#          TERADATA_FULL_URL: ((prod-td-url))
+#          ORACLE_FULL_URL: ((prod-oracle-url))
     on_failure:
       aggregate:
       - put: slack

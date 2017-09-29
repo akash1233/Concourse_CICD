@@ -17,17 +17,17 @@ echo "deploying apps to ZONE ${ENVIRONMENT}"
 
 cf login -a ${CF_API_ZONE_URL} -u ${DEPLOYMENT_USER} -p ${DEPLOYMENT_PWD} -o ${CF_ORG} -s ${CF_SPACE}
 
-echo "start db2Svc service update"
-cf cups db2Svc -p '{"uri": "'${DB2_FULL_URL}'"}' || cf uups db2Svc -p '{"uri": "'${DB2_FULL_URL}'"}'
-echo "end db2Svc service update"
-
-echo "start dcmSvc service update"
-cf cups dcmSvc -p '{"url": "'${TERADATA_FULL_URL}'"}' || cf uups dcmSvc -p '{"url": "'${TERADATA_FULL_URL}'"}'
-echo "end dcmSvc service update"
-
-echo "start orcaSvc service update"
-cf cups orcaSvc -p '{"jdbcUrl": "'${ORACLE_FULL_URL}'"}' || cf uups orcaSvc -p '{"jdbcUrl": "'${ORACLE_FULL_URL}'"}'
-echo "end orcaSvc service update"
+#echo "start db2Svc service update"
+#cf cups db2Svc -p '{"uri": "'${DB2_FULL_URL}'"}' || cf uups db2Svc -p '{"uri": "'${DB2_FULL_URL}'"}'
+#echo "end db2Svc service update"
+#
+#echo "start dcmSvc service update"
+#cf cups dcmSvc -p '{"url": "'${TERADATA_FULL_URL}'"}' || cf uups dcmSvc -p '{"url": "'${TERADATA_FULL_URL}'"}'
+#echo "end dcmSvc service update"
+#
+#echo "start orcaSvc service update"
+#cf cups orcaSvc -p '{"jdbcUrl": "'${ORACLE_FULL_URL}'"}' || cf uups orcaSvc -p '{"jdbcUrl": "'${ORACLE_FULL_URL}'"}'
+#echo "end orcaSvc service update"
 
 echo "deploy started  for iom ui"
 
@@ -39,9 +39,9 @@ echo "building the project"
 
 npm install -s && npm install -g yarn
 
-#TODO change this target 
+#TODO change this target
 
-yarn run build:uat
+yarn run build:{BUILD_TARGET}
 
 cf push -f ${ENVIRONMENT}.manifest.yml
 

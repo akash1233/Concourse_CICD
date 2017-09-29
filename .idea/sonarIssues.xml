@@ -23,7 +23,17 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/scripts/cloud_foundry_deploy_prod.sh">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/scripts/locksmith.sh">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/buildConfig.json">
           <value>
             <set />
           </value>

@@ -9,5 +9,5 @@ inputs:
   - name: code-repo
   - name: dist
 run:
-  dir: code-repo
+  dir: ci
   path: ./scripts/artifactory_upload_artifact.sh
