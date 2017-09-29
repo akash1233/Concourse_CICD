@@ -41,7 +41,7 @@ npm install -s && npm install -g yarn
 
 #TODO change this target
 
-yarn run build:{BUILD_TARGET}
+yarn run build:${BUILD_TARGET}
 
 cf push -f ${ENVIRONMENT}.manifest.yml
 
@@ -61,7 +61,7 @@ npm install -s && npm install -g yarn
 
 #TODO change this target
 
-yarn run build:uat
+yarn run build:${BUILD_TARGET}
 
 cf push -f ${ENVIRONMENT}.manifest.yml
 
@@ -70,19 +70,19 @@ echo "deploy completed  for iom approval ui"
 cd ..
 
 echo "deploy started  for iom-ui-service"
-cf push -f ./iom-ui-services/${ENVIRONMENT}.manifest.yml -p ../deploy-repo/iom-ui-services.jar
+cf push -f ./iom-ui-services/${ENVIRONMENT}.manifest.yml -p ../../deploy-repo/iom-ui-services.jar
 echo "deploy completed for iom-ui-service"
 
 echo "deploy started  for iom-xfer-service"
-cf push -f ./iom-xfer-services/${ENVIRONMENT}.manifest.yml -p ../deploy-repo/iom-xfer-services.jar
+cf push -f ./iom-xfer-services/${ENVIRONMENT}.manifest.yml -p ../../deploy-repo/iom-xfer-services.jar
 echo "deploy completed for iom-xfer-service"
 
 echo "deploy started  for iom-scheduler"
-cf push -f ./iom-scheduler/${ENVIRONMENT}.manifest.yml -p ../deploy-repo/iom-scheduler.jar
+cf push -f ./iom-scheduler/${ENVIRONMENT}.manifest.yml -p ../../deploy-repo/iom-scheduler.jar
 echo "deploy completed for iom-scheduler"
 
 echo "deploy started  for iom-approval-service"
-cf push -f ./iom-approval-service/${ENVIRONMENT}.manifest.yml -p ../deploy-repo/iom-approval-service.jar
+cf push -f ./iom-approval-service/${ENVIRONMENT}.manifest.yml -p ../../deploy-repo/iom-approval-service.jar
 echo "deploy completed for iom-approval-service"
 
 
