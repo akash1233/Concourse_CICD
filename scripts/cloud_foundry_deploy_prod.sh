@@ -31,7 +31,7 @@ cf login -a ${CF_API_ZONE_URL} -u ${DEPLOYMENT_USER} -p ${DEPLOYMENT_PWD} -o ${C
 
 echo "deploy started  for iom ui"
 
-cd ./iom-ui
+cd ../code-repo/iom-ui
 
 ls -ltr
 

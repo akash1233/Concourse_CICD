@@ -23,13 +23,7 @@ if [[ -z "${UI_ONLY_UPLOAD}" ]]; then
   cp -f ../dist/iom-ui-services.jar upload-iom-ui-services/
   cp -f ../dist/iom-xfer-services.jar upload-iom-xfer-services/
 
-  ls -lrt
-
   cd ../code-repo/
-
-  ls -lrt
-
-
 
   export ARTIFACT_BUILD_DIRECTORY=../ci/upload-iom-approval-service
   echo "${ARTIFACT_BUILD_DIRECTORY}============Uploading================= ${ENVIRONMENT}"
