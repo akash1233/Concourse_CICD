@@ -194,7 +194,6 @@ jobs:
     params:
       repository: updated-git
 
-# TODO UPDATE IT
 #- name: Locksmith
 #  max_in_flight: 1
 #  plan:
@@ -220,6 +219,7 @@ jobs:
 #          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
 #          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed invoking locksmith! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
+# IOM Mocked code
 - name: Locksmith
   max_in_flight: 1
   plan:
@@ -349,32 +349,32 @@ jobs:
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed deploying to PCF! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
-- name: Close CR
-  max_in_flight: 1
-  plan:
-  - get: code-repo-dct
-    trigger: true
-    passed: [Deploy-ZoneA]
-    passed: [Deploy-ZoneB]
-  - get: ci
-  - task: Close CR
-    file: ci/concourse/snowfield_close_cr.yml
-    input_mapping: {code-repo: code-repo-dct , deployments-repo: code-repo-dct }
-    params:
-      GITHUB_PRIVATE_KEY: ((github-private-key))
-      GITHUB_TOKEN: ((github-token))
-      ENVIRONMENT: production
-      DEPLOYMENT_USER: ((deployment-user))
-      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-      SNOWFIELD_USER: ((snowfield-user))
-    on_failure:
-      aggregate:
-      - put: slack
-        params:
-          channel: ((slack-channel))
-          username: concourse
-          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed closing CR! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+#- name: Close CR
+#  max_in_flight: 1
+#  plan:
+#  - get: code-repo-dct
+#    trigger: true
+#    passed: [Deploy-ZoneA]
+#    passed: [Deploy-ZoneB]
+#  - get: ci
+#  - task: Close CR
+#    file: ci/concourse/snowfield_close_cr.yml
+#    input_mapping: {code-repo: code-repo-dct , deployments-repo: code-repo-dct }
+#    params:
+#      GITHUB_PRIVATE_KEY: ((github-private-key))
+#      GITHUB_TOKEN: ((github-token))
+#      ENVIRONMENT: production
+#      DEPLOYMENT_USER: ((deployment-user))
+#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+#      SNOWFIELD_USER: ((snowfield-user))
+#    on_failure:
+#      aggregate:
+#      - put: slack
+#        params:
+#          channel: ((slack-channel))
+#          username: concourse
+#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed closing CR! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
 - name: Release Notes
   max_in_flight: 1

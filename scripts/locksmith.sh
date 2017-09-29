@@ -4,5 +4,5 @@ source "${BASH_SOURCE%/*}/flow-env.sh"
 
 set -e -x
 
-echo "mock response from the locksmith service"
+echo "mock response from the locksmith-service"
 
