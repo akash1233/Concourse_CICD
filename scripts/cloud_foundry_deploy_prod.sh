@@ -67,7 +67,6 @@ cf push -f ${ENVIRONMENT}.manifest.yml
 
 echo "deploy completed  for iom approval ui"
 
-cd ..
 
 echo "deploy started  for iom-ui-service"
 cf push -f ./iom-ui-services/${ENVIRONMENT}.manifest.yml -p ../../deploy-repo/iom-ui-services.jar
