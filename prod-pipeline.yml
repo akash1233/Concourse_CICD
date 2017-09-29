@@ -32,7 +32,7 @@ resources:
     uri: git@github.homedepot.com:SupplyChain-IPR/IOMServices_CICD.git
     branch: master
     private_key: ((github-private-key))
-  check_every: 30m
+  check_every: 3m
 
 - name: slack
   type: slack-notification
@@ -148,7 +148,7 @@ jobs:
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: Upload to Artifactory
-    file: ci-iom/iom-concourse/concourse/artifactory_upload_artifact.yml
+    file: ci-iom/concourse/artifactory_upload_artifact.yml
     input_mapping: {code-repo: code-repo-dct, dist: dist}
     params:
       GITHUB_PRIVATE_KEY: ((github-private-key))
@@ -194,16 +194,42 @@ jobs:
     params:
       repository: updated-git
 
+# TODO UPDATE IT
+#- name: Locksmith
+#  max_in_flight: 1
+#  plan:
+#  - get: code-repo-dct
+#    trigger: false
+#    passed: [Create CR]
+#  - get: ci
+#  - task: Locksmith
+#    file: ci/concourse/locksmith.yml
+#    input_mapping: {code-repo: code-repo-dct, deployments-repo: code-repo-dct}
+#    params:
+#      GITHUB_PRIVATE_KEY: {{github-private-key}}
+#      GITHUB_TOKEN: {{github-token}}
+#      ENVIRONMENT: production
+#      SLACK_WEBHOOK_URL: {{slack-webhook-url}}
+#      LOCKSMITH_URL: https://locksmith-mock.apps-np.homedepot.com/api/grants
+#    on_failure:
+#      aggregate:
+#      - put: slack
+#        params:
+#          channel: ((slack-channel))
+#          username: concourse
+#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed invoking locksmith! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+
 - name: Locksmith
   max_in_flight: 1
   plan:
   - get: code-repo-dct
     trigger: false
     passed: [Create CR]
-  - get: ci
+  - get: ci-iom
   - task: Locksmith
-    file: ci/concourse/locksmith.yml
-    input_mapping: {code-repo: code-repo-dct, deployments-repo: code-repo-dct}
+    file: ci-iom/concourse/locksmith.yml
+    input_mapping: {code-repo: code-repo-dct, deployments-repo: code-repo-dct , ci: ci-iom}
     params:
       GITHUB_PRIVATE_KEY: {{github-private-key}}
       GITHUB_TOKEN: {{github-token}}
@@ -246,7 +272,7 @@ jobs:
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: Deploy
-    file: ci-iom/iom-concourse/concourse/cloud_foundry_deploy_prod.yml
+    file: ci-iom/concourse/cloud_foundry_deploy_prod.yml
     input_mapping: {code-repo: code-repo-dct, deploy-repo: dist}
     params:
           GITHUB_PRIVATE_KEY: ((github-private-key))
@@ -279,6 +305,7 @@ jobs:
     passed: [Locksmith]
   - get: repo-cache-dct
   - get: ci
+  - get: ci-iom
   - task: build
     file: ci/concourse/gradle_build.yml
     input_mapping: {code-repo: code-repo-dct, repo-cache: repo-cache-dct}
@@ -297,7 +324,7 @@ jobs:
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: Deploy
-    file: ci-iom/iom-concourse/concourse/cloud_foundry_deploy_prod.yml
+    file: ci-iom/concourse/cloud_foundry_deploy_prod.yml
     input_mapping: {code-repo: code-repo-dct, deploy-repo: dist}
     params:
           GITHUB_PRIVATE_KEY: ((github-private-key))
