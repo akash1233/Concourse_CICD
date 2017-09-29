@@ -4,7 +4,7 @@ source "${BASH_SOURCE%/*}/flow-env.sh"
 
 set -e -x
 
-echo "============================= NEW NEW"
+echo "Artifactory upload"
 
 if [[ -z "${ARTIFACT_BUILD_DIRECTORY}" ]]; then
   echo "ARTIFACT_BUILD_DIRECTORY not set, defaulting to ../dist"
