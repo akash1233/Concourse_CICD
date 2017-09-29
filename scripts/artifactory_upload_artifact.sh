@@ -27,19 +27,23 @@ if [[ -z "${UI_ONLY_UPLOAD}" ]]; then
 
   cd ../code-repo/
 
-  export ARTIFACT_BUILD_DIRECTORY=./upload-iom-approval-service
+  ls -lrt
+
+
+
+  export ARTIFACT_BUILD_DIRECTORY=../ci/upload-iom-approval-service
   echo "${ARTIFACT_BUILD_DIRECTORY}============Uploading================= ${ENVIRONMENT}"
   flow artifactory upload $ENVIRONMENT
 
-  export ARTIFACT_BUILD_DIRECTORY=./upload-iom-scheduler
+  export ARTIFACT_BUILD_DIRECTORY=../ci/upload-iom-scheduler
   echo "${ARTIFACT_BUILD_DIRECTORY}============Uploading================= ${ENVIRONMENT}"
   flow artifactory upload $ENVIRONMENT
 
-  export ARTIFACT_BUILD_DIRECTORY=./upload-iom-ui-services
+  export ARTIFACT_BUILD_DIRECTORY=../ci/upload-iom-ui-services
   echo "${ARTIFACT_BUILD_DIRECTORY}============Uploading================= ${ENVIRONMENT}"
   flow artifactory upload $ENVIRONMENT
 
-  export ARTIFACT_BUILD_DIRECTORY=./upload-iom-xfer-services
+  export ARTIFACT_BUILD_DIRECTORY=../ci/upload-iom-xfer-services
   echo "${ARTIFACT_BUILD_DIRECTORY}============Uploading================= ${ENVIRONMENT}"
   flow artifactory upload $ENVIRONMENT
 
