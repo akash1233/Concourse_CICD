@@ -25,6 +25,15 @@ resources:
     private_key: ((github-private-key))
   check_every: 30m
 
+
+- name: ci-iom
+  type: git
+  source:
+    uri: git@github.homedepot.com:SupplyChain-IPR/IOMServices_CICD.git
+    branch: master
+    private_key: ((github-private-key))
+  check_every: 30m
+
 - name: slack
   type: slack-notification
   source:
@@ -119,6 +128,7 @@ jobs:
     trigger: true
     passed: [Label Stories]
   - get: ci
+  - get: ci-iom
   - get: repo-cache-dct
   - task: build
     file: ci/concourse/gradle_build.yml
@@ -138,7 +148,7 @@ jobs:
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: Upload to Artifactory
-    file: code-repo-dct/iom-concourse/concourse/artifactory_upload_artifact.yml
+    file: ci-iom/iom-concourse/concourse/artifactory_upload_artifact.yml
     input_mapping: {code-repo: code-repo-dct, dist: dist}
     params:
       GITHUB_PRIVATE_KEY: ((github-private-key))
@@ -217,6 +227,7 @@ jobs:
     passed: [Locksmith]
   - get: repo-cache-dct
   - get: ci
+  - get: ci-iom
   - task: build
     file: ci/concourse/gradle_build.yml
     input_mapping: {code-repo: code-repo-dct, repo-cache: repo-cache-dct}
@@ -235,7 +246,7 @@ jobs:
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: Deploy
-    file: code-repo-dct/iom-concourse/concourse/cloud_foundry_deploy_prod.yml
+    file: ci-iom/iom-concourse/concourse/cloud_foundry_deploy_prod.yml
     input_mapping: {code-repo: code-repo-dct, deploy-repo: dist}
     params:
           GITHUB_PRIVATE_KEY: ((github-private-key))
@@ -286,7 +297,7 @@ jobs:
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: Deploy
-    file: code-repo-dct/iom-concourse/concourse/cloud_foundry_deploy_prod.yml
+    file: ci-iom/iom-concourse/concourse/cloud_foundry_deploy_prod.yml
     input_mapping: {code-repo: code-repo-dct, deploy-repo: dist}
     params:
           GITHUB_PRIVATE_KEY: ((github-private-key))
