@@ -177,7 +177,7 @@ jobs:
     params:
       repository: updated-git
 
-- name: Locksmith
+- name: Locksmith-ZONEA
   max_in_flight: 1
   plan:
   - get: code-repo-dct
@@ -193,6 +193,7 @@ jobs:
       ENVIRONMENT: production
       SLACK_WEBHOOK_URL: {{slack-webhook-url}}
       #TODO comment this line for executing in production
+#      LOCKSMITH_URL: http://locksmith-api.apps-za.homedepot.com/api/grants
       LOCKSMITH_URL: https://locksmith-mock.apps-np.homedepot.com/api/grants
     on_failure:
       aggregate:
@@ -202,6 +203,34 @@ jobs:
           username: concourse
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed invoking locksmith! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+
+- name: Locksmith-ZONEB
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct
+    trigger: true
+    passed: [Locksmith-ZONEA]
+  - get: ci
+  - task: Locksmith
+    file: ci/concourse/locksmith.yml
+    input_mapping: {code-repo: code-repo-dct, deployments-repo: code-repo-dct}
+    params:
+      GITHUB_PRIVATE_KEY: {{github-private-key}}
+      GITHUB_TOKEN: {{github-token}}
+      ENVIRONMENT: production
+      SLACK_WEBHOOK_URL: {{slack-webhook-url}}
+      #TODO comment this line for executing in production
+#      LOCKSMITH_URL: http://locksmith-api.apps-zb.homedepot.com/api/grants
+      LOCKSMITH_URL: https://locksmith-mock.apps-np.homedepot.com/api/grants
+    on_failure:
+      aggregate:
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: concourse
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed invoking locksmith! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+
 #
 ## IOM Mocked code
 #- name: Locksmith
@@ -234,7 +263,7 @@ jobs:
   plan:
   - get: code-repo-dct
     trigger: true
-    passed: [Locksmith]
+    passed: [Locksmith-ZONEA]
   - get: repo-cache-dct
   - get: ci
   - get: ci-iom
@@ -285,7 +314,7 @@ jobs:
   plan:
   - get: code-repo-dct
     trigger: true
-    passed: [Locksmith]
+    passed: [Locksmith-ZONEB]
   - get: repo-cache-dct
   - get: ci
   - get: ci-iom

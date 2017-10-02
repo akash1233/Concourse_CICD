@@ -4,6 +4,8 @@ source "${BASH_SOURCE%/*}/flow-env.sh"
 
 set -e -x
 
+export https_proxy=http://thd-svr-proxy-qa.homedepot.com:7070
+
 echo "Artifactory upload"
 
 if [[ -z "${ARTIFACT_BUILD_DIRECTORY}" ]]; then
