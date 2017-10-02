@@ -3,7 +3,7 @@ resources:
   type: git
   source: &code-repo-cache-dct
     uri: git@github.homedepot.com:SupplyChain-IPR/iom-dct-apps.git
-    #TODO update the branch name
+    #TODO update the branch name | NOT DONE
     branch: production-pipeline
     private_key: ((github-private-key))
   check_every: 10m
@@ -192,9 +192,9 @@ jobs:
       GITHUB_TOKEN: {{github-token}}
       ENVIRONMENT: production
       SLACK_WEBHOOK_URL: {{slack-webhook-url}}
-      #TODO comment this line for executing in production
-#      LOCKSMITH_URL: http://locksmith-api.apps-za.homedepot.com/api/grants
-      LOCKSMITH_URL: https://locksmith-mock.apps-np.homedepot.com/api/grants
+      #TODO comment this line for executing in production | DONE
+      LOCKSMITH_URL: http://locksmith-api.apps-za.homedepot.com/api/grants
+#      LOCKSMITH_URL: https://locksmith-mock.apps-np.homedepot.com/api/grants
     on_failure:
       aggregate:
       - put: slack
@@ -219,9 +219,9 @@ jobs:
       GITHUB_TOKEN: {{github-token}}
       ENVIRONMENT: production
       SLACK_WEBHOOK_URL: {{slack-webhook-url}}
-      #TODO comment this line for executing in production
-#      LOCKSMITH_URL: http://locksmith-api.apps-zb.homedepot.com/api/grants
-      LOCKSMITH_URL: https://locksmith-mock.apps-np.homedepot.com/api/grants
+      #TODO comment this line for executing in production | DONE
+      LOCKSMITH_URL: http://locksmith-api.apps-zb.homedepot.com/api/grants
+#      LOCKSMITH_URL: https://locksmith-mock.apps-np.homedepot.com/api/grants
     on_failure:
       aggregate:
       - put: slack
@@ -294,10 +294,11 @@ jobs:
           DEPLOYMENT_USER: ((prod-pipeline-cfuser))
           DEPLOYMENT_PWD: ((prod-pipeline-password))
           SLACK_WEBHOOK_URL: ((slack-webhook-url))
-          #TODO update this value to production
-          BUILD_TARGET: uat
-          #TODO update the secrets file for correct values
+          #TODO update this value to production | DONE
+          BUILD_TARGET: production
+          #TODO update the secrets file for correct values | DONE
           CF_API_ZONE_URL: ((cf-api-prod-zonea))
+          #TODO update the secrets file for correct values | NOT DONE
           CF_ORG: ((cf-org-prod))
           CF_SPACE: ((cf-space-prodza))
     on_failure:
@@ -345,10 +346,11 @@ jobs:
           DEPLOYMENT_USER: ((prod-pipeline-cfuser))
           DEPLOYMENT_PWD: ((prod-pipeline-password))
           SLACK_WEBHOOK_URL: ((slack-webhook-url))
-          #TODO update this value to production
-          BUILD_TARGET: uat
-          #TODO update the secrets file for correct values
+          #TODO update this value to production  DONE
+          BUILD_TARGET: production
+          #TODO update the secrets file for correct values DONE
           CF_API_ZONE_URL: ((cf-api-prod-zoneb))
+          #TODO update the secrets file for correct values | NOT DONE
           CF_ORG: ((cf-org-prod))
           CF_SPACE: ((cf-space-prodzb))
     on_failure:
