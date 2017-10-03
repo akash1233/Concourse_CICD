@@ -4,10 +4,12 @@ image_resource:
   source:
     repository: docker.artifactory.homedepot.com/flow/java
     tag: "latest"
+
 inputs:
   - name: ci
   - name: code-repo
   - name: dist
+
 run:
   dir: ci
   path: ./scripts/artifactory_upload_artifact.sh

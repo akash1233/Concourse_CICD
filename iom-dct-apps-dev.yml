@@ -576,7 +576,6 @@ jobs:
       ENVIRONMENT: development 
       SLACK_WEBHOOK_URL: ((slack-webhook-url))
       ARTIFACTORY_TOKEN: ((artifactory-token))
-
     on_failure:
       aggregate:
       - task: SQH fail

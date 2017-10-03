@@ -113,6 +113,21 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-approval-service/zb.iom-approval-service.manifest.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-approval-ui/gulpfile.js">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-approval-ui/package.json">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-approval-ui/prodza.manifest.yml">
           <value>
             <set />
@@ -133,12 +148,22 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-scheduler/zb.iom-scheduler.manifest.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-ui-services/prodza.manifest.yml">
           <value>
             <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-ui-services/prodzb.manifest.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-ui-services/za.iom-ui-service.manifest.yml">
           <value>
             <set />
           </value>
@@ -164,6 +189,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-xfer-services/prodzb.manifest.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-xfer-services/za.iom-xfer-service.manifest.yml">
           <value>
             <set />
           </value>

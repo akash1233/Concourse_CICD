@@ -13,7 +13,7 @@ resources:
   check_every: 1m
   source: &code-repo-cache-dct
     uri: git@github.homedepot.com:SupplyChain-IPR/iom-dct-apps.git
-    branch: development
+    branch: qa
     private_key: ((github-private-key))
 
 
@@ -1091,7 +1091,7 @@ jobs:
     file: ci/concourse/github_version_and_tag.yml
     input_mapping: {code-repo: code-repo-dct-qa} 
     params:
-      ENVIRONMENT: development 
+      ENVIRONMENT: qa
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       TRACKER_TOKEN: ((tracker-token))
@@ -1120,7 +1120,7 @@ jobs:
       SQH_BUILD_NAME: junit
       SQH_JOB_NAME: UNIT-TEST
       SQH_STATUS: STARTED
-      ENVIRONMENT: development 
+      ENVIRONMENT: qa
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       TRACKER_TOKEN: ((tracker-token))
@@ -1137,7 +1137,7 @@ jobs:
           SQH_BUILD_NAME: junit
           SQH_JOB_NAME: UNIT-TEST
           SQH_STATUS: FAILED
-          ENVIRONMENT: development 
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1159,7 +1159,7 @@ jobs:
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       SLACK_WEBHOOK_URL: ((slack-webhook-url))
-      ENVIRONMENT: development
+      ENVIRONMENT: qa
     on_failure:
       aggregate:
       - task: SQH fail
@@ -1171,7 +1171,7 @@ jobs:
           SQH_BUILD_NAME: junit
           SQH_JOB_NAME: UNIT-TEST
           SQH_STATUS: FAILED
-          ENVIRONMENT: development 
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1190,7 +1190,7 @@ jobs:
       code-repo: code-repo-dct-qa
       zipitdirectory: test
     params:
-      ENVIRONMENT: development 
+      ENVIRONMENT: qa
       ZIP_NAME: unittest/unittest.tar
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
@@ -1207,7 +1207,7 @@ jobs:
           SQH_BUILD_NAME: junit
           SQH_JOB_NAME: UNIT-TEST
           SQH_STATUS: FAILED
-          ENVIRONMENT: development 
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1229,7 +1229,7 @@ jobs:
       SQH_BUILD_NAME: junit
       SQH_JOB_NAME: UNIT-TEST
       SQH_STATUS: COMPLETED
-      ENVIRONMENT: development 
+      ENVIRONMENT: qa
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       TRACKER_TOKEN: ((tracker-token))
@@ -1247,7 +1247,7 @@ jobs:
           SQH_BUILD_NAME: junit
           SQH_JOB_NAME: UNIT-TEST
           SQH_STATUS: FAILED
-          ENVIRONMENT: development 
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1255,7 +1255,6 @@ jobs:
           token: ((qualityhub-token-dct))
       - put: slack
         params:
-          
           channel: ((slack-channel))
           username: ((slack-username))
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
@@ -1271,7 +1270,7 @@ jobs:
     file: ci/concourse/tracker_label_stories.yml
     input_mapping: {code-repo: code-repo-dct-qa} 
     params:
-      ENVIRONMENT: development 
+      ENVIRONMENT: qa
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       TRACKER_TOKEN: ((tracker-token))
@@ -1279,7 +1278,6 @@ jobs:
     on_failure:
       put: slack
       params:
-        #TODO replace below channel name with your channel
         channel: ((slack-channel))
         username: ((slack-username))
         icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
@@ -1299,7 +1297,7 @@ jobs:
       SQH_BUILD_NAME: sonar
       SQH_JOB_NAME: CODE-QUALITY
       SQH_STATUS: STARTED
-      ENVIRONMENT: development 
+      ENVIRONMENT: qa
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       TRACKER_TOKEN: ((tracker-token))
@@ -1316,7 +1314,7 @@ jobs:
           SQH_BUILD_NAME: sonar
           SQH_JOB_NAME: CODE-QUALITY
           SQH_STATUS: FAILED
-          ENVIRONMENT: development 
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1349,7 +1347,7 @@ jobs:
           SQH_BUILD_NAME: sonar
           SQH_JOB_NAME: CODE-QUALITY
           SQH_STATUS: FAILED
-          ENVIRONMENT: development 
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1369,7 +1367,7 @@ jobs:
       SQH_BUILD_NAME: sonar
       SQH_JOB_NAME: CODE-QUALITY
       SQH_STATUS: COMPLETED
-      ENVIRONMENT: development 
+      ENVIRONMENT: qa
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       TRACKER_TOKEN: ((tracker-token))
@@ -1386,7 +1384,7 @@ jobs:
           SQH_BUILD_NAME: sonar
           SQH_JOB_NAME: CODE-QUALITY
           SQH_STATUS: FAILED
-          ENVIRONMENT: development 
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1414,7 +1412,7 @@ jobs:
       SQH_BUILD_NAME: fortify
       SQH_JOB_NAME: SECURITY-SCAN
       SQH_STATUS: STARTED
-      ENVIRONMENT: development 
+      ENVIRONMENT: qa
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       TRACKER_TOKEN: ((tracker-token))
@@ -1431,7 +1429,7 @@ jobs:
           SQH_BUILD_NAME: fortify
           SQH_JOB_NAME: SECURITY-SCAN
           SQH_STATUS: FAILED
-          ENVIRONMENT: development 
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1449,7 +1447,7 @@ jobs:
     input_mapping: {code-repo: code-repo-dct-qa} 
     params:
       FORTIFY_TOKEN: ((fortify-token-dct))
-      ENVIRONMENT: development 
+      ENVIRONMENT: qa
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       SLACK_WEBHOOK_URL: ((slack-webhook-url))
@@ -1464,7 +1462,7 @@ jobs:
           SQH_BUILD_NAME: fortify
           SQH_JOB_NAME: SECURITY-SCAN
           SQH_STATUS: FAILED
-          ENVIRONMENT: development
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1484,7 +1482,7 @@ jobs:
       SQH_BUILD_NAME: fortify
       SQH_JOB_NAME: SECURITY-SCAN
       SQH_STATUS: COMPLETED
-      ENVIRONMENT: development 
+      ENVIRONMENT: qa
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       TRACKER_TOKEN: ((tracker-token))
@@ -1501,7 +1499,7 @@ jobs:
           SQH_BUILD_NAME: fortify
           SQH_JOB_NAME: SECURITY-SCAN
           SQH_STATUS: FAILED
-          ENVIRONMENT: development 
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1531,7 +1529,7 @@ jobs:
       SQH_BUILD_NAME: artifactory
       SQH_JOB_NAME: ARTIFACT
       SQH_STATUS: STARTED
-      ENVIRONMENT: development 
+      ENVIRONMENT: qa
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       TRACKER_TOKEN: ((tracker-token))
@@ -1548,7 +1546,7 @@ jobs:
           SQH_BUILD_NAME: artifactory
           SQH_JOB_NAME: ARTIFACT
           SQH_STATUS: FAILED
-          ENVIRONMENT: development 
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1581,7 +1579,7 @@ jobs:
           SQH_BUILD_NAME: artifactory
           SQH_JOB_NAME: ARTIFACT
           SQH_STATUS: FAILED
-          ENVIRONMENT: development 
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1600,7 +1598,7 @@ jobs:
     params:
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
-      ENVIRONMENT: development 
+      ENVIRONMENT: qa
       SLACK_WEBHOOK_URL: ((slack-webhook-url))
       ARTIFACTORY_TOKEN: ((artifactory-token))
     on_failure:
@@ -1614,7 +1612,7 @@ jobs:
           SQH_BUILD_NAME: artifactory
           SQH_JOB_NAME: ARTIFACT
           SQH_STATUS: FAILED
-          ENVIRONMENT: development 
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1634,7 +1632,7 @@ jobs:
       SQH_BUILD_NAME: artifactory
       SQH_JOB_NAME: ARTIFACT
       SQH_STATUS: COMPLETED
-      ENVIRONMENT: development 
+      ENVIRONMENT: qa
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       TRACKER_TOKEN: ((tracker-token))
@@ -1651,7 +1649,7 @@ jobs:
           SQH_BUILD_NAME: artifactory
           SQH_JOB_NAME: ARTIFACT
           SQH_STATUS: FAILED
-          ENVIRONMENT: development
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1681,7 +1679,7 @@ jobs:
       SQH_BUILD_NAME: pcf
       SQH_JOB_NAME: DEPLOY-QA
       SQH_STATUS: STARTED
-      ENVIRONMENT: development 
+      ENVIRONMENT: qa
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       TRACKER_TOKEN: ((tracker-token))
@@ -1698,7 +1696,7 @@ jobs:
           SQH_BUILD_NAME: pcf
           SQH_JOB_NAME: DEPLOY-QA
           SQH_STATUS: FAILED
-          ENVIRONMENT: development 
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1732,7 +1730,7 @@ jobs:
           SQH_BUILD_NAME: artifactory
           SQH_JOB_NAME: ARTIFACT
           SQH_STATUS: FAILED
-          ENVIRONMENT: dev
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1751,7 +1749,7 @@ jobs:
     params:
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
-      ENVIRONMENT: dev
+      ENVIRONMENT: qa
       DEPLOYMENT_USER: ((deployment-user))
       DEPLOYMENT_PWD: ((deployment-pwd))
       SLACK_WEBHOOK_URL: ((slack-webhook-url))
@@ -1770,7 +1768,7 @@ jobs:
           SQH_BUILD_NAME: pcf
           SQH_JOB_NAME: DEPLOY-QA
           SQH_STATUS: FAILED
-          ENVIRONMENT: development 
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
@@ -1789,7 +1787,7 @@ jobs:
       SQH_BUILD_NAME: pcf
       SQH_JOB_NAME: DEPLOY-QA
       SQH_STATUS: COMPLETED
-      ENVIRONMENT: development
+      ENVIRONMENT: qa
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       TRACKER_TOKEN: ((tracker-token))
@@ -1806,7 +1804,7 @@ jobs:
           SQH_BUILD_NAME: pcf
           SQH_JOB_NAME: DEPLOY-QA
           SQH_STATUS: FAILED
-          ENVIRONMENT: development #TODO: use the appropriate environment name from your buildConfig that matches
+          ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
           GITHUB_TOKEN: ((github-token))
           TRACKER_TOKEN: ((tracker-token))
