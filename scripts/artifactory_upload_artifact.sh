@@ -4,7 +4,7 @@ source "${BASH_SOURCE%/*}/flow-env.sh"
 
 set -e -x
 
-#export https_proxy=http://thd-svr-proxy-qa.homedepot.com:7070
+export https_proxy=http://thd-svr-proxy-qa.homedepot.com:7070
 
 
 ls -al
@@ -31,6 +31,8 @@ if [[ -z "${UI_ONLY_UPLOAD}" ]]; then
   cd ../code-repo/
 
   ls -al
+
+  printenv
 
   export ARTIFACT_BUILD_DIRECTORY=../ci/upload-iom-approval-service
   echo "${ARTIFACT_BUILD_DIRECTORY}============Uploading================= ${ENVIRONMENT}"
