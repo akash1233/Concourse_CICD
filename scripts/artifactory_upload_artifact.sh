@@ -30,6 +30,8 @@ if [[ -z "${UI_ONLY_UPLOAD}" ]]; then
 
   cd ../code-repo/
 
+  ls -al
+
   export ARTIFACT_BUILD_DIRECTORY=../ci/upload-iom-approval-service
   echo "${ARTIFACT_BUILD_DIRECTORY}============Uploading================= ${ENVIRONMENT}"
   flow artifactory upload $ENVIRONMENT
