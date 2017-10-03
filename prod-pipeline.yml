@@ -3,8 +3,8 @@ resources:
   type: git
   source: &code-repo-cache-dct
     uri: git@github.homedepot.com:SupplyChain-IPR/iom-dct-apps.git
-    #TODO update the branch name | NOT DONE
-    branch: production-pipeline
+    #TODO update the branch name | DONE
+    branch: master
     private_key: ((github-private-key))
   check_every: 10m
 
@@ -298,7 +298,7 @@ jobs:
           BUILD_TARGET: production
           #TODO update the secrets file for correct values | DONE
           CF_API_ZONE_URL: ((cf-api-prod-zonea))
-          #TODO update the secrets file for correct values | NOT DONE
+          #TODO update the secrets file for correct values | DONE
           CF_ORG: ((cf-org-prod))
           CF_SPACE: ((cf-space-prodza))
     on_failure:
@@ -350,7 +350,7 @@ jobs:
           BUILD_TARGET: production
           #TODO update the secrets file for correct values DONE
           CF_API_ZONE_URL: ((cf-api-prod-zoneb))
-          #TODO update the secrets file for correct values | NOT DONE
+          #TODO update the secrets file for correct values | DONE
           CF_ORG: ((cf-org-prod))
           CF_SPACE: ((cf-space-prodzb))
     on_failure:
