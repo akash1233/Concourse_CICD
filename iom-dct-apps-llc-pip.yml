@@ -604,7 +604,6 @@ jobs:
           token: ((qualityhub-token-dct))
       - put: slack
         params:
-          #TODO replace below channel name with your channel
           channel: ((slack-channel))
           username: ((slack-username))
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
@@ -615,7 +614,7 @@ jobs:
     params:
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
-      ENVIRONMENT: development 
+      ENVIRONMENT: development
       SLACK_WEBHOOK_URL: ((slack-webhook-url))
       ARTIFACTORY_TOKEN: ((artifactory-token))
     on_failure:

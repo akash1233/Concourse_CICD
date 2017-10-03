@@ -11,5 +11,5 @@ inputs:
   - name: dist
 
 run:
-  dir: code-repo
-  path: ./iom-concourse/scripts/artifactory_upload_artifact.sh
+  dir: ci
+  path: ./scripts/artifactory_upload_artifact.sh
