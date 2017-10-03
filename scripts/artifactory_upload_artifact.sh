@@ -4,11 +4,6 @@ source "${BASH_SOURCE%/*}/flow-env.sh"
 
 set -e -x
 
-export https_proxy=http://thd-svr-proxy-qa.homedepot.com:7070
-
-
-ls -al
-
 echo "Artifactory upload"
 
 if [[ -z "${ARTIFACT_BUILD_DIRECTORY}" ]]; then
@@ -17,6 +12,7 @@ if [[ -z "${ARTIFACT_BUILD_DIRECTORY}" ]]; then
 fi
 
 ls -lrt ../dist
+
 if [[ -z "${UI_ONLY_UPLOAD}" ]]; then
   mkdir -p upload-iom-approval-service
   mkdir -p upload-iom-scheduler
@@ -28,11 +24,10 @@ if [[ -z "${UI_ONLY_UPLOAD}" ]]; then
   cp -f ../dist/iom-ui-services.jar upload-iom-ui-services/
   cp -f ../dist/iom-xfer-services.jar upload-iom-xfer-services/
 
+ # changing to the code repo directory before running the flow
   cd ../code-repo/
 
   ls -al
-
-  printenv
 
   export ARTIFACT_BUILD_DIRECTORY=../ci/upload-iom-approval-service
   echo "${ARTIFACT_BUILD_DIRECTORY}============Uploading================= ${ENVIRONMENT}"
