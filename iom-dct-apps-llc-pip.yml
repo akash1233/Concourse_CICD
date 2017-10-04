@@ -996,9 +996,9 @@ jobs:
           username: concourse
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-  - task: Functional Test
+  - task: Functional Tests
     file: ci-iom/concourse/func_int_servicetest.yml
-    input_mapping: {code-repo: code-repo-dct-dev, repo-cache: repo-cache-dct , ci: ci-iom}
+    input_mapping: {code-repo: code-repo-dct-dev , repo-cache: repo-cache-dct , ci: ci-iom}
     params:
       ENVIRONMENT: development
       TEST_OUTPUT_DIRECTORY: build/test-results/funcIntegrationTest
@@ -1742,7 +1742,7 @@ jobs:
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: deploy
-    file: code-repo-dct/concourse/cloud_foundry_deploy_llc.yml
+    file: ci-iom/concourse/cloud_foundry_deploy_llc.yml
     input_mapping: {code-repo: code-repo-dct-qa, deploy-repo: dist , ci: ci-iom}
     params:
       GITHUB_PRIVATE_KEY: ((github-private-key))

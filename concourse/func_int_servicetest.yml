@@ -6,7 +6,7 @@ image_resource:
     tag: "latest"
 
 inputs:
-- name: code-repo-dct
+- name: code-repo
 - name: repo-cache
 - name: ci
 
