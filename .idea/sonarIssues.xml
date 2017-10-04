@@ -68,6 +68,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/scripts/cloud_foundry_deploy_llc.sh">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/scripts/cloud_foundry_deploy_prod.sh">
           <value>
             <set />

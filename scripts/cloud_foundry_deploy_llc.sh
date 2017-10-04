@@ -15,7 +15,7 @@ wget -qO- 'https://cli.run.pivotal.io/stable?release=linux64-binary&source=githu
 echo "deploying apps to ZONE ${ENVIRONMENT}"
 
 
-cf login -a ${CF_API_ZONE_URL} -u ${DEPLOYMENT_USER} -p ${DEPLOYMENT_PWD} -o ${CF_ORG} -s ${CF_SPACE}
+cf login -a ${CF_API} -u ${DEPLOYMENT_USER} -p ${DEPLOYMENT_PWD} -o ${CF_ORG} -s ${CF_SPACE}
 
 #echo "start db2Svc service update"
 #cf cups db2Svc -p '{"uri": "'${DB2_FULL_URL}'"}' || cf uups db2Svc -p '{"uri": "'${DB2_FULL_URL}'"}'
