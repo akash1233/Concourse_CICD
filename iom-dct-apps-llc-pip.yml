@@ -26,21 +26,12 @@ resources:
       - build.gradle
       - gradle.properties
 
-# - name: git(deployments)
-#   type: git
-#   source:
-#     uri: git@github.homedepot.com:SupplyChain-IPR/iom-deployments.git #TODO: link to your deployments repo
-#     branch: master
-#     private_key: ((github-private-key))
-#   check_every: 24h
-
 - name: ci
   type: git
   source:
     uri: git@github.homedepot.com:ci-cd/concourse-common.git
     branch: master
     private_key: ((github-private-key))
-    #tag_filter: "1.*"
   check_every: 24h
 
 - name: ci-iom
