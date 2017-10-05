@@ -12,8 +12,9 @@ npm rebuild
 npm install
 yarn run build:${BUILD_TARGET}
 chmod 777 $DIST_DIRECTORY
+mkdir -p ../dist/$1/
 cp -r ./$DIST_DIRECTORY/* ../dist/$1/
-ls -lrt
+ls -lrt ../dist/$1/
 }
 
 buildcopy iom-ui

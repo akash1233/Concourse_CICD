@@ -777,7 +777,6 @@ jobs:
       CF_API: ((cf-api-dev))
       CF_ORG: ((cf-org-dev))
       CF_SPACE: ((cf-space-dev))
-      BUILD_TARGET: develop
       DEPLOY_TYPE: SERVICES
     on_failure:
       aggregate:
@@ -889,10 +888,11 @@ jobs:
     input_mapping: {code-repo: code-repo-dct-dev, repo-cache: repo-cache-dct-npm , ci: ci-iom}
     params:
       GRADLE_USER_HOME: ../repo-cache/.gradle
-      DIST_DIRECTORY: build/libs
+      DIST_DIRECTORY: dist
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      BUILD_TARGET: develop
     on_failure:
       aggregate:
       - task: SQH fail
@@ -929,7 +929,6 @@ jobs:
       CF_API: ((cf-api-dev))
       CF_ORG: ((cf-org-dev))
       CF_SPACE: ((cf-space-dev))
-      BUILD_TARGET: develop
       DEPLOY_TYPE: UI
     on_failure:
       aggregate:
