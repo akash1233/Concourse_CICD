@@ -7,7 +7,7 @@ npm install -g yarn
 
 buildcopy(){
 cd ./$1
-cp ../../repo-cache/node_modules node_modules
+cp -r ../../repo-cache/node_modules node_modules
 npm rebuild
 npm install
 yarn run build:${BUILD_TARGET}
