@@ -48,6 +48,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/concourse/yarn_build.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/iom-dct-apps-dev.yml">
           <value>
             <set />
@@ -73,6 +78,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/scripts/cloud_foundry_deploy_llc_bg.sh">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/scripts/cloud_foundry_deploy_prod.sh">
           <value>
             <set />
@@ -94,6 +104,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/scripts/locksmith.sh">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/scripts/yarn_build.sh">
           <value>
             <set />
           </value>
@@ -173,6 +188,16 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-ui-services/src/test/java/com/thd/controller/ServiceTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-ui-services/src/test/java/functests/IomSkuControllerIntTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-ui-services/za.iom-ui-service.manifest.yml">
           <value>
             <set />
@@ -199,6 +224,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-xfer-services/prodzb.manifest.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-xfer-services/src/test/java/functests/IomRequestControllerIntTest.java">
           <value>
             <set />
           </value>
