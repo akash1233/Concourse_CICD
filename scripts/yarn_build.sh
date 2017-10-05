@@ -18,6 +18,7 @@ ls -lrt ../dist/$1/
 }
 
 buildcopy iom-ui
+cd ..
 buildcopy iom-approval-ui
 
 
