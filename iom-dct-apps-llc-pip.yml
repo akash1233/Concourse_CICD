@@ -885,7 +885,7 @@ jobs:
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: build
     file: ci-iom/concourse/yarn_build.yml
-    input_mapping: {code-repo: code-repo-dct-dev , deploy-repo: dist , ci: ci-iom}
+    input_mapping: { code-repo: code-repo-dct-dev, repo-cache: repo-cache-dct-npm , ci: ci-iom }
     params:
       GRADLE_USER_HOME: ../repo-cache/.gradle
       DIST_DIRECTORY: dist
@@ -918,7 +918,7 @@ jobs:
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: deploy
     file: ci-iom/concourse/cloud_foundry_deploy_llc.yml
-    input_mapping: {code-repo: code-repo-dct-dev , deploy-repo: dist , ci: ci-iom}
+    input_mapping: { code-repo: code-repo-dct-dev , deploy-repo: dist , ci: ci-iom }
     params:
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))

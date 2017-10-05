@@ -20,7 +20,7 @@ ls -lrt ../dist/$1/
 buildcopy iom-ui
 cd ..
 buildcopy iom-approval-ui
-
-ls ../
-ls ../../
 ls -lrt ../dist/
+ls -lrt ../dist/iom-ui
+ls -lrt ../dist/iom-approval-ui
+

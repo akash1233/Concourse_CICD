@@ -5,6 +5,10 @@ set -e -x
 echo "Deployment repo content"
 ls -lrt ../deploy-repo
 
+ls -lrt ../../
+
+
+
 installcfcli() {
     echo "installing cf cli"
     wget -qO- 'https://cli.run.pivotal.io/stable?release=linux64-binary&source=github' | tar -zxf - -C /usr/local/bin
@@ -70,14 +74,6 @@ deployservices() {
     echo "Start list all the application in current space"
     cf apps
     echo "Complited list all the application in current space"
-
-    echo "Start iom-ui environment"
-    cf env iom-ui
-    echo "End iom-ui environment"
-
-    echo "Start iom-approval-ui environment"
-    cf env iom-approval-ui
-    echo "End iom-approval-ui environment"
 
     echo "Start iom-ui-service environment"
     cf env iom-ui-service

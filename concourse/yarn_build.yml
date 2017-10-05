@@ -11,5 +11,6 @@ inputs:
 run:
   dir: code-repo
   path: ../ci/scripts/yarn_build.sh
+
 outputs:
   - name: dist
