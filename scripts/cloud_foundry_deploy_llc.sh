@@ -21,6 +21,8 @@ deployui() {
     echo "deploy started  for iom ui"
     cd ../code-repo/iom-ui
     ls -ltr
+    ls ../../deploy-repo/
+    ls ../../
     cp ../../deploy-repo/iom-ui/* ./dist/ -rf
     ls -lrt ./dist/
     cf push -f ${ENVIRONMENT}.manifest.yml
