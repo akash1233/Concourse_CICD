@@ -43,6 +43,7 @@ deployui() {
 
 
 deployservices() {
+    cd ../code-repo
     echo "deploy started  for iom-ui-service"
     cf push -f ./iom-ui-services/${ENVIRONMENT}.manifest.yml -p ../deploy-repo/iom-ui-services.jar
     echo "deploy completed for iom-ui-service"
