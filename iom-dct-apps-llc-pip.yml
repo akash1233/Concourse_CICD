@@ -995,7 +995,8 @@ jobs:
   plan:
   - get: code-repo-dct-dev
     trigger: true
-    passed: [Deploy DEV]
+    passed: [Deploy DEV UI]
+    passed: [Deploy DEV Services]
   - get: ci
   - get: ci-iom
   - get: repo-cache-dct
@@ -1112,7 +1113,8 @@ jobs:
   plan:
   - get: code-repo-dct-dev
     trigger: true
-    passed: [Deploy DEV]
+    passed: [Deploy DEV UI]
+    passed: [Deploy DEV Services]
   - get: ci
   - get: ci-iom
   - get: repo-cache-dct
