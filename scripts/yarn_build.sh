@@ -21,4 +21,6 @@ buildcopy iom-ui
 cd ..
 buildcopy iom-approval-ui
 
-
+ls ../
+ls ../../
+ls -lrt ../dist/
