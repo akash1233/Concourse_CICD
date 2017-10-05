@@ -8,21 +8,19 @@ resources:
     branch: development
     private_key: ((github-private-key))
 
-#- name: code-repo-dct-qa
-#  type: git
-#  check_every: 1m
-#  source: &code-repo-cache-dct
-#    uri: git@github.homedepot.com:SupplyChain-IPR/iom-dct-apps.git
-#    branch: qa
-#    private_key: ((github-private-key))
+- name: code-repo-dct-qa
+  type: git
+  check_every: 1m
+  source: &code-repo-cache-dct
+    uri: git@github.homedepot.com:SupplyChain-IPR/iom-dct-apps.git
+    branch: qa
+    private_key: ((github-private-key))
 
 - name: repo-cache-dct-npm
   type: npm-cache
   source:
     <<: *code-repo-cache-dct
     project-path: iom-ui
-#    paths:
-#      - package.json
     registry: https://npm.artifactory.homedepot.com/artifactory/api/npm/npm/
 
 
@@ -82,25 +80,26 @@ groups:
  - name: IOM DEV
    jobs:
    - Version DEV
-#   - Unit Test DEV
-#   - Label Stories DEV
-#   - Code Quality DEV
-#   - Security Scan DEV
-#   - Build Artifact DEV
+   - Unit Test DEV
+   - Label Stories DEV
+   - Code Quality DEV
+   - Security Scan DEV
+   - Build Artifact DEV
    - Deploy DEV Services
    - Deploy DEV UI
-#   - Functional Integration Tests DEV
-#   - Functional Service Tests DEV
+   - Functional Integration Tests DEV
+   - Functional Service Tests DEV
 
-# - name: IOM QA
-#   jobs:
-#    - Version QA
-#    - Unit Test QA
-#    - Label Stories QA
-#    - Code Quality QA
-#    - Security Scan QA
-#    - Build Artifact QA
-#    - Deploy QA
+ - name: IOM QA
+   jobs:
+    - Version QA
+    - Unit Test QA
+    - Label Stories QA
+    - Code Quality QA
+    - Security Scan QA
+    - Build Artifact QA
+    - Deploy QA Services
+    - Deploy QA UI
 
 
 jobs:
@@ -127,572 +126,572 @@ jobs:
         username: ((slack-username))
         icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
         text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed versioning! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#
-#- name: Unit Test DEV
-#  max_in_flight: 1
-#  plan:
-#  - get: code-repo-dct-dev
-#    trigger: true
-#    passed: [Version DEV]
-#  - get: ci
-#  - get: repo-cache-dct
-#  - task: SQH Started
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-dev}
-#    params:
-#      SQH_BUILD_NAME: junit
-#      SQH_JOB_NAME: UNIT-TEST
-#      SQH_STATUS: STARTED
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: junit
-#          SQH_JOB_NAME: UNIT-TEST
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: Unit Test
-#    file: ci/concourse/gradle_test.yml
-#    input_mapping: {code-repo: code-repo-dct-dev, repo-cache: repo-cache-dct}
-#    params:
-#      GRADLE_USER_HOME: ../repo-cache/.gradle
-#      TEST_OUTPUT_DIRECTORY: build/test-results
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      ENVIRONMENT: development
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: junit
-#          SQH_JOB_NAME: UNIT-TEST
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed testing! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: ZipAndShip test results (Artifactory)
-#    file: ci/concourse/zipitshipit_artifactory.yml
-#    input_mapping:
-#      code-repo: code-repo-dct-dev
-#      zipitdirectory: test
-#    params:
-#      ENVIRONMENT: development
-#      ZIP_NAME: unittest/unittest.tar
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      ARTIFACTORY_TOKEN: ((artifactory-token))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: junit
-#          SQH_JOB_NAME: UNIT-TEST
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed shipping unit test to artifactory! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: SQH Complete
-#    file: ci/concourse/sqh_with_results.yml
-#    input_mapping:
-#      code-repo: code-repo-dct-dev
-#      test-results: test
-#    params:
-#      SQH_BUILD_NAME: junit
-#      SQH_JOB_NAME: UNIT-TEST
-#      SQH_STATUS: COMPLETED
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#        #keeps failed stage from spinning forever
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: junit
-#          SQH_JOB_NAME: UNIT-TEST
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#- name: Label Stories DEV
-#  max_in_flight: 1
-#  plan:
-#  - get: code-repo-dct-dev
-#    trigger: true
-#    passed: [Unit Test DEV]
-#  - get: ci
-#  - task: Label Stories (Pivotal Tracker)
-#    file: ci/concourse/tracker_label_stories.yml
-#    input_mapping: {code-repo: code-repo-dct-dev}
-#    params:
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#    on_failure:
-#      put: slack
-#      params:
-#        #TODO replace below channel name with your channel
-#        channel: ((slack-channel))
-#        username: ((slack-username))
-#        icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#        text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed labeling stories in Tracker! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#- name: Code Quality DEV
-#  max_in_flight: 1
-#  plan:
-#  - get: code-repo-dct-dev
-#    trigger: true
-#    passed: [Unit Test DEV]
-#  - get: ci
-#  - get: repo-cache-dct
-#  - task: SQH Started
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-dev}
-#    params:
-#      SQH_BUILD_NAME: sonar
-#      SQH_JOB_NAME: CODE-QUALITY
-#      SQH_STATUS: STARTED
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: sonar
-#          SQH_JOB_NAME: CODE-QUALITY
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: Sonar
-#    file: ci/concourse/sonar_gradle_buildbreaker.yml
-#    input_mapping: {code-repo: code-repo-dct-dev, repo-cache: repo-cache-dct}
-#    params:
-#      GRADLE_USER_HOME: ../repo-cache/.gradle
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: sonar
-#          SQH_JOB_NAME: CODE-QUALITY
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed submitting code to Sonar! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: SQH Complete
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-dev}
-#    params:
-#      SQH_BUILD_NAME: sonar
-#      SQH_JOB_NAME: CODE-QUALITY
-#      SQH_STATUS: COMPLETED
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: sonar
-#          SQH_JOB_NAME: CODE-QUALITY
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#
-#- name: Security Scan DEV
-#  max_in_flight: 1
-#  plan:
-#  - get: code-repo-dct-dev
-#    trigger: true
-#    passed: [Unit Test DEV]
-#  - get: ci
-#  - task: SQH Started
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-dev}
-#    params:
-#      SQH_BUILD_NAME: fortify
-#      SQH_JOB_NAME: SECURITY-SCAN
-#      SQH_STATUS: STARTED
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: fortify
-#          SQH_JOB_NAME: SECURITY-SCAN
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: Fortify
-#    file: ci/concourse/fortify_security_scan.yml
-#    input_mapping: {code-repo: code-repo-dct-dev}
-#    params:
-#      FORTIFY_TOKEN: ((fortify-token-dct))
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: fortify
-#          SQH_JOB_NAME: SECURITY-SCAN
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed submitting security scan! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: SQH Complete
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-dev}
-#    params:
-#      SQH_BUILD_NAME: fortify
-#      SQH_JOB_NAME: SECURITY-SCAN
-#      SQH_STATUS: COMPLETED
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: fortify
-#          SQH_JOB_NAME: SECURITY-SCAN
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#
-#- name: Build Artifact DEV
-#  max_in_flight: 1
-#  plan:
-#  - get: code-repo-dct-dev
-#    trigger: true
-#    passed: [Label Stories DEV, Code Quality DEV, Security Scan DEV]
-#  - get: ci
-#  - get: repo-cache-dct
-#  - get: ci-iom
-#  - task: SQH Started
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-dev}
-#    params:
-#      SQH_BUILD_NAME: artifactory
-#      SQH_JOB_NAME: ARTIFACT
-#      SQH_STATUS: STARTED
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: artifactory
-#          SQH_JOB_NAME: ARTIFACT
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: build
-#    file: ci/concourse/gradle_build.yml
-#    input_mapping: {code-repo: code-repo-dct-dev, repo-cache: repo-cache-dct}
-#    params:
-#      GRADLE_USER_HOME: ../repo-cache/.gradle
-#      DIST_DIRECTORY: build/libs
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: artifactory
-#          SQH_JOB_NAME: ARTIFACT
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: Upload to Artifactory
-#    file: ci-iom/concourse/artifactory_upload_artifact.yml
-#    input_mapping: {code-repo: code-repo-dct-dev, dist: dist , ci: ci-iom}
-#    params:
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      ENVIRONMENT: development
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      ARTIFACTORY_TOKEN: ((artifactory-token))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: artifactory
-#          SQH_JOB_NAME: ARTIFACT
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed upload to Artifactory! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: SQH Completed
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-dev}
-#    params:
-#      SQH_BUILD_NAME: artifactory
-#      SQH_JOB_NAME: ARTIFACT
-#      SQH_STATUS: COMPLETED
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: artifactory
-#          SQH_JOB_NAME: ARTIFACT
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+
+- name: Unit Test DEV
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct-dev
+    trigger: true
+    passed: [Version DEV]
+  - get: ci
+  - get: repo-cache-dct
+  - task: SQH Started
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-dev}
+    params:
+      SQH_BUILD_NAME: junit
+      SQH_JOB_NAME: UNIT-TEST
+      SQH_STATUS: STARTED
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: junit
+          SQH_JOB_NAME: UNIT-TEST
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: Unit Test
+    file: ci/concourse/gradle_test.yml
+    input_mapping: {code-repo: code-repo-dct-dev, repo-cache: repo-cache-dct}
+    params:
+      GRADLE_USER_HOME: ../repo-cache/.gradle
+      TEST_OUTPUT_DIRECTORY: build/test-results
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      ENVIRONMENT: development
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: junit
+          SQH_JOB_NAME: UNIT-TEST
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed testing! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: ZipAndShip test results (Artifactory)
+    file: ci/concourse/zipitshipit_artifactory.yml
+    input_mapping:
+      code-repo: code-repo-dct-dev
+      zipitdirectory: test
+    params:
+      ENVIRONMENT: development
+      ZIP_NAME: unittest/unittest.tar
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      ARTIFACTORY_TOKEN: ((artifactory-token))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: junit
+          SQH_JOB_NAME: UNIT-TEST
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed shipping unit test to artifactory! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: SQH Complete
+    file: ci/concourse/sqh_with_results.yml
+    input_mapping:
+      code-repo: code-repo-dct-dev
+      test-results: test
+    params:
+      SQH_BUILD_NAME: junit
+      SQH_JOB_NAME: UNIT-TEST
+      SQH_STATUS: COMPLETED
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+        #keeps failed stage from spinning forever
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: junit
+          SQH_JOB_NAME: UNIT-TEST
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+- name: Label Stories DEV
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct-dev
+    trigger: true
+    passed: [Unit Test DEV]
+  - get: ci
+  - task: Label Stories (Pivotal Tracker)
+    file: ci/concourse/tracker_label_stories.yml
+    input_mapping: {code-repo: code-repo-dct-dev}
+    params:
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+    on_failure:
+      put: slack
+      params:
+        #TODO replace below channel name with your channel
+        channel: ((slack-channel))
+        username: ((slack-username))
+        icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+        text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed labeling stories in Tracker! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+- name: Code Quality DEV
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct-dev
+    trigger: true
+    passed: [Unit Test DEV]
+  - get: ci
+  - get: repo-cache-dct
+  - task: SQH Started
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-dev}
+    params:
+      SQH_BUILD_NAME: sonar
+      SQH_JOB_NAME: CODE-QUALITY
+      SQH_STATUS: STARTED
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: sonar
+          SQH_JOB_NAME: CODE-QUALITY
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: Sonar
+    file: ci/concourse/sonar_gradle_buildbreaker.yml
+    input_mapping: {code-repo: code-repo-dct-dev, repo-cache: repo-cache-dct}
+    params:
+      GRADLE_USER_HOME: ../repo-cache/.gradle
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: sonar
+          SQH_JOB_NAME: CODE-QUALITY
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed submitting code to Sonar! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: SQH Complete
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-dev}
+    params:
+      SQH_BUILD_NAME: sonar
+      SQH_JOB_NAME: CODE-QUALITY
+      SQH_STATUS: COMPLETED
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: sonar
+          SQH_JOB_NAME: CODE-QUALITY
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+
+- name: Security Scan DEV
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct-dev
+    trigger: true
+    passed: [Unit Test DEV]
+  - get: ci
+  - task: SQH Started
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-dev}
+    params:
+      SQH_BUILD_NAME: fortify
+      SQH_JOB_NAME: SECURITY-SCAN
+      SQH_STATUS: STARTED
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: fortify
+          SQH_JOB_NAME: SECURITY-SCAN
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: Fortify
+    file: ci/concourse/fortify_security_scan.yml
+    input_mapping: {code-repo: code-repo-dct-dev}
+    params:
+      FORTIFY_TOKEN: ((fortify-token-dct))
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: fortify
+          SQH_JOB_NAME: SECURITY-SCAN
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed submitting security scan! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: SQH Complete
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-dev}
+    params:
+      SQH_BUILD_NAME: fortify
+      SQH_JOB_NAME: SECURITY-SCAN
+      SQH_STATUS: COMPLETED
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: fortify
+          SQH_JOB_NAME: SECURITY-SCAN
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+
+- name: Build Artifact DEV
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct-dev
+    trigger: true
+    passed: [Label Stories DEV, Code Quality DEV, Security Scan DEV]
+  - get: ci
+  - get: repo-cache-dct
+  - get: ci-iom
+  - task: SQH Started
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-dev}
+    params:
+      SQH_BUILD_NAME: artifactory
+      SQH_JOB_NAME: ARTIFACT
+      SQH_STATUS: STARTED
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: artifactory
+          SQH_JOB_NAME: ARTIFACT
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: build
+    file: ci/concourse/gradle_build.yml
+    input_mapping: {code-repo: code-repo-dct-dev, repo-cache: repo-cache-dct}
+    params:
+      GRADLE_USER_HOME: ../repo-cache/.gradle
+      DIST_DIRECTORY: build/libs
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: artifactory
+          SQH_JOB_NAME: ARTIFACT
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: Upload to Artifactory
+    file: ci-iom/concourse/artifactory_upload_artifact.yml
+    input_mapping: {code-repo: code-repo-dct-dev, dist: dist , ci: ci-iom}
+    params:
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      ENVIRONMENT: development
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      ARTIFACTORY_TOKEN: ((artifactory-token))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: artifactory
+          SQH_JOB_NAME: ARTIFACT
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed upload to Artifactory! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: SQH Completed
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-dev}
+    params:
+      SQH_BUILD_NAME: artifactory
+      SQH_JOB_NAME: ARTIFACT
+      SQH_STATUS: COMPLETED
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: artifactory
+          SQH_JOB_NAME: ARTIFACT
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
 - name: Deploy DEV Services
   max_in_flight: 1
   plan:
   - get: code-repo-dct-dev
     trigger: true
-    passed: [Version DEV]
+    passed: [Build Artifact DEV]
   - get: ci
   - get: ci-iom
   - get: repo-cache-dct
@@ -843,7 +842,7 @@ jobs:
   plan:
   - get: code-repo-dct-dev
     trigger: true
-    passed: [Version DEV]
+    passed: [Build Artifact DEV]
   - get: ci
   - get: ci-iom
   - get: repo-cache-dct-npm
@@ -990,984 +989,1135 @@ jobs:
           username: ((slack-username))
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#
-#- name: Functional Integration Tests DEV
-#  max_in_flight: 1
-#  plan:
-#  - get: code-repo-dct-dev
-#    trigger: true
-#    passed: [Deploy DEV]
-#  - get: ci
-#  - get: ci-iom
-#  - get: repo-cache-dct
-#  - task: SQH Started
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-dev}
-#    params:
-#      SQH_BUILD_NAME: protractor-selenium
-#      SQH_JOB_NAME: FUNCTIONAL-TEST
-#      SQH_STATUS: STARTED
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      SQH_JOB_DESCRIPTION: Executes functional test cases
-#      QUALITYHUB_TOKEN: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: protractor-selenium
-#          SQH_JOB_NAME: FUNCTIONAL-TEST
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          QUALITYHUB_TOKEN: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          channel: ((slack-channel))
-#          username: concourse
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: Functional Test
-#    file: ci-iom/concourse/func_int_test.yml
-#    input_mapping:
-#      code-repo: code-repo-dct-dev
-#      ci: ci-iom
-#    params:
-#      ENVIRONMENT: development
-#      TEST_OUTPUT_DIRECTORY: build/test-results
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      BASE_URL: ((iom-dev-url))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: protractor-selenium
-#          SQH_JOB_NAME: FUNCTIONAL-TEST
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          QUALITYHUB_TOKEN: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          channel: ((slack-channel))
-#          username: concourse
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed testing! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: SQH Complete
-#    file: ci/concourse/sqh_with_results.yml
-#    input_mapping: {code-repo: code-repo-dct-dev, test-results: tests}
-#    params:
-#      SQH_BUILD_NAME: protractor-selenium
-#      SQH_JOB_NAME: FUNCTIONAL-TEST
-#      SQH_STATUS: COMPLETED
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      QUALITYHUB_TOKEN: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: tests
-#        params:
-#          SQH_BUILD_NAME: protractor-selenium
-#          SQH_JOB_NAME: FUNCTIONAL-TEST
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          QUALITYHUB_TOKEN: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          channel: ((slack-channel))
-#          username: concourse
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#
-#- name: Functional Service Tests DEV
-#  max_in_flight: 1
-#  plan:
-#  - get: code-repo-dct-dev
-#    trigger: true
-#    passed: [Deploy DEV]
-#  - get: ci
-#  - get: ci-iom
-#  - get: repo-cache-dct
-#  - task: SQH Started
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-dev}
-#    params:
-#      SQH_BUILD_NAME: restassured-servicetests
-#      SQH_JOB_NAME: FUNCTIONAL-SERVICE-TEST
-#      SQH_STATUS: STARTED
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      SQH_JOB_DESCRIPTION: Executes service functional test cases
-#      QUALITYHUB_TOKEN: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: restassured-servicetests
-#          SQH_JOB_NAME: FUNCTIONAL-SERVICE-TEST
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          QUALITYHUB_TOKEN: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          channel: ((slack-channel))
-#          username: concourse
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: Functional Tests
-#    file: ci-iom/concourse/func_int_servicetest.yml
-#    input_mapping: {code-repo: code-repo-dct-dev , repo-cache: repo-cache-dct , ci: ci-iom}
-#    params:
-#      ENVIRONMENT: development
-#      TEST_OUTPUT_DIRECTORY: build/test-results/funcIntegrationTest
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: restassured-servicetests
-#          SQH_JOB_NAME: FUNCTIONAL-SERVICE-TEST
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          QUALITYHUB_TOKEN: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          channel: ((slack-channel))
-#          username: concourse
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed testing! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: SQH Complete
-#    file: ci/concourse/sqh_with_results.yml
-#    input_mapping: {code-repo: code-repo-dct-dev, test-results: tests}
-#    params:
-#      SQH_BUILD_NAME: restassured-servicetests
-#      SQH_JOB_NAME: FUNCTIONAL-SERVICE-TEST
-#      SQH_STATUS: COMPLETED
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      QUALITYHUB_TOKEN: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-dev
-#          test-results: tests
-#        params:
-#          SQH_BUILD_NAME: protractor-selenium
-#          SQH_JOB_NAME: FUNCTIONAL-SERVICE-TEST
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: development
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          QUALITYHUB_TOKEN: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          channel: ((slack-channel))
-#          username: concourse
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#
-#
 
+- name: Functional Integration Tests DEV
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct-dev
+    trigger: true
+    passed: [Deploy DEV]
+  - get: ci
+  - get: ci-iom
+  - get: repo-cache-dct
+  - task: SQH Started
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-dev}
+    params:
+      SQH_BUILD_NAME: protractor-selenium
+      SQH_JOB_NAME: FUNCTIONAL-TEST
+      SQH_STATUS: STARTED
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      SQH_JOB_DESCRIPTION: Executes functional test cases
+      QUALITYHUB_TOKEN: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: protractor-selenium
+          SQH_JOB_NAME: FUNCTIONAL-TEST
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          QUALITYHUB_TOKEN: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: concourse
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: Functional Test
+    file: ci-iom/concourse/func_int_test.yml
+    input_mapping:
+      code-repo: code-repo-dct-dev
+      ci: ci-iom
+    params:
+      ENVIRONMENT: development
+      TEST_OUTPUT_DIRECTORY: build/test-results
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      BASE_URL: ((iom-dev-url))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: protractor-selenium
+          SQH_JOB_NAME: FUNCTIONAL-TEST
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          QUALITYHUB_TOKEN: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: concourse
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed testing! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: SQH Complete
+    file: ci/concourse/sqh_with_results.yml
+    input_mapping: {code-repo: code-repo-dct-dev, test-results: tests}
+    params:
+      SQH_BUILD_NAME: protractor-selenium
+      SQH_JOB_NAME: FUNCTIONAL-TEST
+      SQH_STATUS: COMPLETED
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      QUALITYHUB_TOKEN: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: tests
+        params:
+          SQH_BUILD_NAME: protractor-selenium
+          SQH_JOB_NAME: FUNCTIONAL-TEST
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          QUALITYHUB_TOKEN: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: concourse
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
-
-#### QA pipeline ###################
-#### QA pipeline ###################
-#### QA pipeline ###################
-#### QA pipeline ###################
-#### QA pipeline ###################
+- name: Functional Service Tests DEV
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct-dev
+    trigger: true
+    passed: [Deploy DEV]
+  - get: ci
+  - get: ci-iom
+  - get: repo-cache-dct
+  - task: SQH Started
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-dev}
+    params:
+      SQH_BUILD_NAME: restassured-servicetests
+      SQH_JOB_NAME: FUNCTIONAL-SERVICE-TEST
+      SQH_STATUS: STARTED
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      SQH_JOB_DESCRIPTION: Executes service functional test cases
+      QUALITYHUB_TOKEN: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: restassured-servicetests
+          SQH_JOB_NAME: FUNCTIONAL-SERVICE-TEST
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          QUALITYHUB_TOKEN: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: concourse
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: Functional Tests
+    file: ci-iom/concourse/func_int_servicetest.yml
+    input_mapping: {code-repo: code-repo-dct-dev , repo-cache: repo-cache-dct , ci: ci-iom}
+    params:
+      ENVIRONMENT: development
+      TEST_OUTPUT_DIRECTORY: build/test-results/funcIntegrationTest
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: test
+        params:
+          SQH_BUILD_NAME: restassured-servicetests
+          SQH_JOB_NAME: FUNCTIONAL-SERVICE-TEST
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          QUALITYHUB_TOKEN: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: concourse
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed testing! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: SQH Complete
+    file: ci/concourse/sqh_with_results.yml
+    input_mapping: {code-repo: code-repo-dct-dev, test-results: tests}
+    params:
+      SQH_BUILD_NAME: restassured-servicetests
+      SQH_JOB_NAME: FUNCTIONAL-SERVICE-TEST
+      SQH_STATUS: COMPLETED
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      QUALITYHUB_TOKEN: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-dev
+          test-results: tests
+        params:
+          SQH_BUILD_NAME: protractor-selenium
+          SQH_JOB_NAME: FUNCTIONAL-SERVICE-TEST
+          SQH_STATUS: FAILED
+          ENVIRONMENT: development
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          QUALITYHUB_TOKEN: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: concourse
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
 
 
 
-#
-#- name: Version QA
-#  max_in_flight: 1
-#  plan:
-#  - get: code-repo-dct-qa
-#    trigger: true
-#  - get: ci
-#  - task: Version and Tag
-#    file: ci/concourse/github_version_and_tag.yml
-#    input_mapping: {code-repo: code-repo-dct-qa}
-#    params:
-#      ENVIRONMENT: qa
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#    on_failure:
-#      put: slack
-#      params:
-#        #TODO replace below channel name with your channel
-#        channel: ((slack-channel))
-#        username: ((slack-username))
-#        icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#        text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed versioning! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#
-#- name: Unit Test QA
-#  max_in_flight: 1
-#  plan:
-#  - get: code-repo-dct-qa
-#    trigger: true
-#    passed: [Version QA]
-#  - get: ci
-#  - get: repo-cache-dct
-#  - task: SQH Started
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-qa}
-#    params:
-#      SQH_BUILD_NAME: junit
-#      SQH_JOB_NAME: UNIT-TEST
-#      SQH_STATUS: STARTED
-#      ENVIRONMENT: qa
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: junit
-#          SQH_JOB_NAME: UNIT-TEST
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: Unit Test
-#    file: ci/concourse/gradle_test.yml
-#    input_mapping: {code-repo: code-repo-dct-qa, repo-cache: repo-cache-dct}
-#    params:
-#      GRADLE_USER_HOME: ../repo-cache/.gradle
-#      TEST_OUTPUT_DIRECTORY: build/test-results
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      ENVIRONMENT: qa
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: junit
-#          SQH_JOB_NAME: UNIT-TEST
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed testing! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: ZipAndShip test results (Artifactory)
-#    file: ci/concourse/zipitshipit_artifactory.yml
-#    input_mapping:
-#      code-repo: code-repo-dct-qa
-#      zipitdirectory: test
-#    params:
-#      ENVIRONMENT: qa
-#      ZIP_NAME: unittest/unittest.tar
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      ARTIFACTORY_TOKEN: ((artifactory-token))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: junit
-#          SQH_JOB_NAME: UNIT-TEST
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed shipping unit test to artifactory! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: SQH Complete
-#    file: ci/concourse/sqh_with_results.yml
-#    input_mapping:
-#      code-repo: code-repo-dct-qa
-#      test-results: test
-#    params:
-#      SQH_BUILD_NAME: junit
-#      SQH_JOB_NAME: UNIT-TEST
-#      SQH_STATUS: COMPLETED
-#      ENVIRONMENT: qa
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#        #keeps failed stage from spinning forever
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: junit
-#          SQH_JOB_NAME: UNIT-TEST
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#- name: Label Stories QA
-#  max_in_flight: 1
-#  plan:
-#  - get: code-repo-dct-qa
-#    trigger: true
-#    passed: [Unit Test QA]
-#  - get: ci
-#  - task: Label Stories (Pivotal Tracker)
-#    file: ci/concourse/tracker_label_stories.yml
-#    input_mapping: {code-repo: code-repo-dct-qa}
-#    params:
-#      ENVIRONMENT: qa
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#    on_failure:
-#      put: slack
-#      params:
-#        channel: ((slack-channel))
-#        username: ((slack-username))
-#        icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#        text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed labeling stories in Tracker! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#- name: Code Quality QA
-#  max_in_flight: 1
-#  plan:
-#  - get: code-repo-dct-qa
-#    trigger: true
-#    passed: [Unit Test QA]
-#  - get: ci
-#  - get: repo-cache-dct
-#  - task: SQH Started
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-qa}
-#    params:
-#      SQH_BUILD_NAME: sonar
-#      SQH_JOB_NAME: CODE-QUALITY
-#      SQH_STATUS: STARTED
-#      ENVIRONMENT: qa
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: sonar
-#          SQH_JOB_NAME: CODE-QUALITY
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: Sonar
-#    file: ci/concourse/sonar_gradle_buildbreaker.yml
-#    input_mapping: {code-repo: code-repo-dct-qa, repo-cache: repo-cache-dct}
-#    params:
-#      GRADLE_USER_HOME: ../repo-cache/.gradle
-#      ENVIRONMENT: development
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: sonar
-#          SQH_JOB_NAME: CODE-QUALITY
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed submitting code to Sonar! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: SQH Complete
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-qa}
-#    params:
-#      SQH_BUILD_NAME: sonar
-#      SQH_JOB_NAME: CODE-QUALITY
-#      SQH_STATUS: COMPLETED
-#      ENVIRONMENT: qa
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: sonar
-#          SQH_JOB_NAME: CODE-QUALITY
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#
-#- name: Security Scan QA
-#  max_in_flight: 1
-#  plan:
-#  - get: code-repo-dct-qa
-#    trigger: true
-#    passed: [Unit Test QA]
-#  - get: ci
-#  - task: SQH Started
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-qa}
-#    params:
-#      SQH_BUILD_NAME: fortify
-#      SQH_JOB_NAME: SECURITY-SCAN
-#      SQH_STATUS: STARTED
-#      ENVIRONMENT: qa
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: fortify
-#          SQH_JOB_NAME: SECURITY-SCAN
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: Fortify
-#    file: ci/concourse/fortify_security_scan.yml
-#    input_mapping: {code-repo: code-repo-dct-qa}
-#    params:
-#      FORTIFY_TOKEN: ((fortify-token-dct))
-#      ENVIRONMENT: qa
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: fortify
-#          SQH_JOB_NAME: SECURITY-SCAN
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed submitting security scan! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: SQH Complete
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-qa}
-#    params:
-#      SQH_BUILD_NAME: fortify
-#      SQH_JOB_NAME: SECURITY-SCAN
-#      SQH_STATUS: COMPLETED
-#      ENVIRONMENT: qa
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: fortify
-#          SQH_JOB_NAME: SECURITY-SCAN
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#
-#- name: Build Artifact QA
-#  max_in_flight: 1
-#  plan:
-#  - get: code-repo-dct-qa
-#    trigger: true
-#    passed: [Label Stories QA, Code Quality QA, Security Scan QA]
-#  - get: ci
-#  - get: repo-cache-dct
-#  - get: ci-iom
-#  - task: SQH Started
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-qa}
-#    params:
-#      SQH_BUILD_NAME: artifactory
-#      SQH_JOB_NAME: ARTIFACT
-#      SQH_STATUS: STARTED
-#      ENVIRONMENT: qa
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: artifactory
-#          SQH_JOB_NAME: ARTIFACT
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: build
-#    file: ci/concourse/gradle_build.yml
-#    input_mapping: {code-repo: code-repo-dct-qa, repo-cache: repo-cache-dct}
-#    params:
-#      GRADLE_USER_HOME: ../repo-cache/.gradle
-#      DIST_DIRECTORY: build/libs
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: artifactory
-#          SQH_JOB_NAME: ARTIFACT
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: Upload to Artifactory
-#    file: ci-iom/concourse/artifactory_upload_artifact.yml
-#    input_mapping: {code-repo: code-repo-dct-qa, dist: dist , ci: ci-iom}
-#    params:
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      ENVIRONMENT: qa
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      ARTIFACTORY_TOKEN: ((artifactory-token))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: artifactory
-#          SQH_JOB_NAME: ARTIFACT
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed upload to Artifactory! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: SQH Completed
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-qa}
-#    params:
-#      SQH_BUILD_NAME: artifactory
-#      SQH_JOB_NAME: ARTIFACT
-#      SQH_STATUS: COMPLETED
-#      ENVIRONMENT: qa
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: artifactory
-#          SQH_JOB_NAME: ARTIFACT
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#
-#- name: Deploy QA
-#  max_in_flight: 1
-#  plan:
-#  - get: code-repo-dct-qa
-#    trigger: true
-#    passed: [Build Artifact QA]
-#  - get: ci
-#  - get: ci-iom
-#  - get: repo-cache-dct
-#  - task: SQH Started
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-qa}
-#    params:
-#      SQH_BUILD_NAME: pcf
-#      SQH_JOB_NAME: DEPLOY-QA
-#      SQH_STATUS: STARTED
-#      ENVIRONMENT: qa
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: pcf
-#          SQH_JOB_NAME: DEPLOY-QA
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#
-#  - task: build
-#    file: ci/concourse/gradle_build.yml
-#    input_mapping: {code-repo: code-repo-dct-qa, repo-cache: repo-cache-dct}
-#    params:
-#      GRADLE_USER_HOME: ../repo-cache/.gradle
-#      DIST_DIRECTORY: build/libs
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: artifactory
-#          SQH_JOB_NAME: ARTIFACT
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          #TODO replace below channel name with your channel
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: deploy
-#    file: ci-iom/concourse/cloud_foundry_deploy_llc.yml
-#    input_mapping: {code-repo: code-repo-dct-qa, deploy-repo: dist , ci: ci-iom}
-#    params:
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      ENVIRONMENT: qa
-#      DEPLOYMENT_USER: ((deployment-user))
-#      DEPLOYMENT_PWD: ((deployment-pwd))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      CF_API: ((cf-api-dev))
-#      CF_ORG: ((cf-org-dev))
-#      CF_SPACE: ((cf-space-qa))
-#      BUILD_TARGET: qa
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: pcf
-#          SQH_JOB_NAME: DEPLOY-QA
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed deploying to PCF! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-#  - task: SQH Completed
-#    file: ci/concourse/sqh.yml
-#    input_mapping: {code-repo: code-repo-dct-qa}
-#    params:
-#      SQH_BUILD_NAME: pcf
-#      SQH_JOB_NAME: DEPLOY-QA
-#      SQH_STATUS: COMPLETED
-#      ENVIRONMENT: qa
-#      GITHUB_PRIVATE_KEY: ((github-private-key))
-#      GITHUB_TOKEN: ((github-token))
-#      TRACKER_TOKEN: ((tracker-token))
-#      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#      token: ((qualityhub-token-dct))
-#    on_failure:
-#      aggregate:
-#      - task: SQH fail
-#        file: ci/concourse/sqh.yml
-#        input_mapping:
-#          code-repo: code-repo-dct-qa
-#          test-results: test
-#        params:
-#          SQH_BUILD_NAME: pcf
-#          SQH_JOB_NAME: DEPLOY-QA
-#          SQH_STATUS: FAILED
-#          ENVIRONMENT: qa
-#          GITHUB_PRIVATE_KEY: ((github-private-key))
-#          GITHUB_TOKEN: ((github-token))
-#          TRACKER_TOKEN: ((tracker-token))
-#          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-#          token: ((qualityhub-token-dct))
-#      - put: slack
-#        params:
-#          channel: ((slack-channel))
-#          username: ((slack-username))
-#          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-#          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+
+### QA pipeline ###################
+### QA pipeline ###################
+### QA pipeline ###################
+### QA pipeline ###################
+### QA pipeline ###################
+
+
+
+
+
+- name: Version QA
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct-qa
+    trigger: true
+  - get: ci
+  - task: Version and Tag
+    file: ci/concourse/github_version_and_tag.yml
+    input_mapping: {code-repo: code-repo-dct-qa}
+    params:
+      ENVIRONMENT: qa
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+    on_failure:
+      put: slack
+      params:
+        #TODO replace below channel name with your channel
+        channel: ((slack-channel))
+        username: ((slack-username))
+        icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+        text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed versioning! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+
+- name: Unit Test QA
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct-qa
+    trigger: true
+    passed: [Version QA]
+  - get: ci
+  - get: repo-cache-dct
+  - task: SQH Started
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-qa}
+    params:
+      SQH_BUILD_NAME: junit
+      SQH_JOB_NAME: UNIT-TEST
+      SQH_STATUS: STARTED
+      ENVIRONMENT: qa
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: junit
+          SQH_JOB_NAME: UNIT-TEST
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: Unit Test
+    file: ci/concourse/gradle_test.yml
+    input_mapping: {code-repo: code-repo-dct-qa, repo-cache: repo-cache-dct}
+    params:
+      GRADLE_USER_HOME: ../repo-cache/.gradle
+      TEST_OUTPUT_DIRECTORY: build/test-results
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      ENVIRONMENT: qa
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: junit
+          SQH_JOB_NAME: UNIT-TEST
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed testing! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: ZipAndShip test results (Artifactory)
+    file: ci/concourse/zipitshipit_artifactory.yml
+    input_mapping:
+      code-repo: code-repo-dct-qa
+      zipitdirectory: test
+    params:
+      ENVIRONMENT: qa
+      ZIP_NAME: unittest/unittest.tar
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      ARTIFACTORY_TOKEN: ((artifactory-token))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: junit
+          SQH_JOB_NAME: UNIT-TEST
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed shipping unit test to artifactory! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: SQH Complete
+    file: ci/concourse/sqh_with_results.yml
+    input_mapping:
+      code-repo: code-repo-dct-qa
+      test-results: test
+    params:
+      SQH_BUILD_NAME: junit
+      SQH_JOB_NAME: UNIT-TEST
+      SQH_STATUS: COMPLETED
+      ENVIRONMENT: qa
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+        #keeps failed stage from spinning forever
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: junit
+          SQH_JOB_NAME: UNIT-TEST
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+- name: Label Stories QA
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct-qa
+    trigger: true
+    passed: [Unit Test QA]
+  - get: ci
+  - task: Label Stories (Pivotal Tracker)
+    file: ci/concourse/tracker_label_stories.yml
+    input_mapping: {code-repo: code-repo-dct-qa}
+    params:
+      ENVIRONMENT: qa
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+    on_failure:
+      put: slack
+      params:
+        channel: ((slack-channel))
+        username: ((slack-username))
+        icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+        text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed labeling stories in Tracker! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+- name: Code Quality QA
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct-qa
+    trigger: true
+    passed: [Unit Test QA]
+  - get: ci
+  - get: repo-cache-dct
+  - task: SQH Started
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-qa}
+    params:
+      SQH_BUILD_NAME: sonar
+      SQH_JOB_NAME: CODE-QUALITY
+      SQH_STATUS: STARTED
+      ENVIRONMENT: qa
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: sonar
+          SQH_JOB_NAME: CODE-QUALITY
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: Sonar
+    file: ci/concourse/sonar_gradle_buildbreaker.yml
+    input_mapping: {code-repo: code-repo-dct-qa, repo-cache: repo-cache-dct}
+    params:
+      GRADLE_USER_HOME: ../repo-cache/.gradle
+      ENVIRONMENT: development
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: sonar
+          SQH_JOB_NAME: CODE-QUALITY
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed submitting code to Sonar! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: SQH Complete
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-qa}
+    params:
+      SQH_BUILD_NAME: sonar
+      SQH_JOB_NAME: CODE-QUALITY
+      SQH_STATUS: COMPLETED
+      ENVIRONMENT: qa
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: sonar
+          SQH_JOB_NAME: CODE-QUALITY
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+
+- name: Security Scan QA
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct-qa
+    trigger: true
+    passed: [Unit Test QA]
+  - get: ci
+  - task: SQH Started
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-qa}
+    params:
+      SQH_BUILD_NAME: fortify
+      SQH_JOB_NAME: SECURITY-SCAN
+      SQH_STATUS: STARTED
+      ENVIRONMENT: qa
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: fortify
+          SQH_JOB_NAME: SECURITY-SCAN
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: Fortify
+    file: ci/concourse/fortify_security_scan.yml
+    input_mapping: {code-repo: code-repo-dct-qa}
+    params:
+      FORTIFY_TOKEN: ((fortify-token-dct))
+      ENVIRONMENT: qa
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: fortify
+          SQH_JOB_NAME: SECURITY-SCAN
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed submitting security scan! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: SQH Complete
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-qa}
+    params:
+      SQH_BUILD_NAME: fortify
+      SQH_JOB_NAME: SECURITY-SCAN
+      SQH_STATUS: COMPLETED
+      ENVIRONMENT: qa
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: fortify
+          SQH_JOB_NAME: SECURITY-SCAN
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+
+- name: Build Artifact QA
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct-qa
+    trigger: true
+    passed: [Label Stories QA, Code Quality QA, Security Scan QA]
+  - get: ci
+  - get: repo-cache-dct
+  - get: ci-iom
+  - task: SQH Started
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-qa}
+    params:
+      SQH_BUILD_NAME: artifactory
+      SQH_JOB_NAME: ARTIFACT
+      SQH_STATUS: STARTED
+      ENVIRONMENT: qa
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: artifactory
+          SQH_JOB_NAME: ARTIFACT
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: build
+    file: ci/concourse/gradle_build.yml
+    input_mapping: {code-repo: code-repo-dct-qa, repo-cache: repo-cache-dct}
+    params:
+      GRADLE_USER_HOME: ../repo-cache/.gradle
+      DIST_DIRECTORY: build/libs
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: artifactory
+          SQH_JOB_NAME: ARTIFACT
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: Upload to Artifactory
+    file: ci-iom/concourse/artifactory_upload_artifact.yml
+    input_mapping: {code-repo: code-repo-dct-qa, dist: dist , ci: ci-iom}
+    params:
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      ENVIRONMENT: qa
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      ARTIFACTORY_TOKEN: ((artifactory-token))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: artifactory
+          SQH_JOB_NAME: ARTIFACT
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed upload to Artifactory! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: SQH Completed
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-qa}
+    params:
+      SQH_BUILD_NAME: artifactory
+      SQH_JOB_NAME: ARTIFACT
+      SQH_STATUS: COMPLETED
+      ENVIRONMENT: qa
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: artifactory
+          SQH_JOB_NAME: ARTIFACT
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+
+- name: Deploy QA Services
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct-qa
+    trigger: true
+    passed: [Build Artifact QA]
+  - get: ci
+  - get: ci-iom
+  - get: repo-cache-dct
+  - task: SQH Started
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-qa}
+    params:
+      SQH_BUILD_NAME: pcf
+      SQH_JOB_NAME: DEPLOY-DEV
+      SQH_STATUS: STARTED
+      ENVIRONMENT: qa
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: pcf
+          SQH_JOB_NAME: DEPLOY-DEV
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: build
+    file: ci/concourse/gradle_build.yml
+    input_mapping: {code-repo: code-repo-dct-qa, repo-cache: repo-cache-dct}
+    params:
+      GRADLE_USER_HOME: ../repo-cache/.gradle
+      DIST_DIRECTORY: build/libs
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: artifactory
+          SQH_JOB_NAME: ARTIFACT
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: deploy
+    file: ci-iom/concourse/cloud_foundry_deploy_llc.yml
+    input_mapping: {code-repo: code-repo-dct-qa , deploy-repo: dist , ci: ci-iom}
+    params:
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      ENVIRONMENT: qa
+      DEPLOYMENT_USER: ((deployment-user))
+      DEPLOYMENT_PWD: ((deployment-pwd))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      CF_API: ((cf-api-dev))
+      CF_ORG: ((cf-org-dev))
+      CF_SPACE: ((cf-space-dev))
+      DEPLOY_TYPE: SERVICES
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: pcf
+          SQH_JOB_NAME: DEPLOY-QA
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed deploying to PCF! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: SQH Completed
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-qa}
+    params:
+      SQH_BUILD_NAME: pcf
+      SQH_JOB_NAME: DEPLOY-QA
+      SQH_STATUS: COMPLETED
+      ENVIRONMENT: qa
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: pcf
+          SQH_JOB_NAME: DEPLOY-QA
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa #TODO: use the appropriate environment name from your buildConfig that matches
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+
+- name: Deploy QA UI
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct-qa
+    trigger: true
+    passed: [Build Artifact QA]
+  - get: ci
+  - get: ci-iom
+  - get: repo-cache-dct-npm
+  - task: SQH Started
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-qa}
+    params:
+      SQH_BUILD_NAME: pcf
+      SQH_JOB_NAME: DEPLOY-QA
+      SQH_STATUS: STARTED
+      ENVIRONMENT: qa
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: pcf
+          SQH_JOB_NAME: DEPLOY-QA
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: build
+    file: ci-iom/concourse/yarn_build.yml
+    input_mapping: { code-repo: code-repo-dct-qa, repo-cache: repo-cache-dct-npm , ci: ci-iom }
+    params:
+      GRADLE_USER_HOME: ../repo-cache/.gradle
+      DIST_DIRECTORY: dist
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      BUILD_TARGET: qa
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: artifactory
+          SQH_JOB_NAME: ARTIFACT
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: deploy
+    file: ci-iom/concourse/cloud_foundry_deploy_llc.yml
+    input_mapping: { code-repo: code-repo-dct-qa , deploy-repo: dist , ci: ci-iom }
+    params:
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      ENVIRONMENT: qa
+      DEPLOYMENT_USER: ((deployment-user))
+      DEPLOYMENT_PWD: ((deployment-pwd))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      CF_API: ((cf-api-dev))
+      CF_ORG: ((cf-org-dev))
+      CF_SPACE: ((cf-space-dev))
+      DEPLOY_TYPE: UI
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: pcf
+          SQH_JOB_NAME: DEPLOY-QA
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed deploying to PCF! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: SQH Completed
+    file: ci/concourse/sqh.yml
+    input_mapping: {code-repo: code-repo-dct-qa}
+    params:
+      SQH_BUILD_NAME: pcf
+      SQH_JOB_NAME: DEPLOY-QA
+      SQH_STATUS: COMPLETED
+      ENVIRONMENT: qa
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      TRACKER_TOKEN: ((tracker-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      token: ((qualityhub-token-dct))
+    on_failure:
+      aggregate:
+      - task: SQH fail
+        file: ci/concourse/sqh.yml
+        input_mapping:
+          code-repo: code-repo-dct-qa
+          test-results: test
+        params:
+          SQH_BUILD_NAME: pcf
+          SQH_JOB_NAME: DEPLOY-QA
+          SQH_STATUS: FAILED
+          ENVIRONMENT: qa
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          TRACKER_TOKEN: ((tracker-token))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          token: ((qualityhub-token-dct))
+      - put: slack
+        params:
+          #TODO replace below channel name with your channel
+          channel: ((slack-channel))
+          username: ((slack-username))
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"

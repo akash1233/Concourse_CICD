@@ -41,8 +41,6 @@ deployui() {
     cf push -f ${ENVIRONMENT}.manifest.yml
     echo "deploy completed  for iom approval ui"
     echo "deployment of for the service will be done and the ui will be excluded"
-    cd ../code-repo/
-    ls -lrt
 }
 
 
