@@ -5,29 +5,6 @@ set -e -x
 echo "Deployment repo content"
 ls -lrt ../deploy-repo
 
-installcfcli
-logintoconcourse
-
-if [ -z "${DEPLOY_TYPE}" ]
-then
-  echo "services being deployed as DEPLOY_TYPE value not set"
-  deployservices
-elif [ "${DEPLOY_TYPE}" == "SERVICES" ]
-then
-  echo "services being deployed"
-  deployservices
-elif [ "${DEPLOY_TYPE}" == "UI" ]
-then
-  echo "ui being deployed"
-  deployui
-else
-  echo "nothing being deployed DEPLOY TYPE value has incorrect value :" ${DEPLOY_TYPE}
-fi
-
-echo "********************************************************* ${ENVIRONMENT} deployments done"
-
-
-
 installcfcli() {
     echo "installing cf cli"
     wget -qO- 'https://cli.run.pivotal.io/stable?release=linux64-binary&source=github' | tar -zxf - -C /usr/local/bin
@@ -116,3 +93,27 @@ deployservices() {
     echo "End iom-xfer-service environment"
 
 }
+
+installcfcli
+logintoconcourse
+
+if [ -z "${DEPLOY_TYPE}" ]
+then
+  echo "services being deployed as DEPLOY_TYPE value not set"
+  deployservices
+elif [ "${DEPLOY_TYPE}" == "SERVICES" ]
+then
+  echo "services being deployed"
+  deployservices
+elif [ "${DEPLOY_TYPE}" == "UI" ]
+then
+  echo "ui being deployed"
+  deployui
+else
+  echo "nothing being deployed DEPLOY TYPE value has incorrect value :" ${DEPLOY_TYPE}
+fi
+
+echo "********************************************************* ${ENVIRONMENT} deployments done"
+
+
+
