@@ -21,7 +21,8 @@ resources:
   source:
     <<: *code-repo-cache-dct
     project-path: iom-ui
-    paths: package.json
+#    paths:
+#      - package.json
     registry: https://npm.artifactory.homedepot.com/artifactory/api/npm/npm/
 
 

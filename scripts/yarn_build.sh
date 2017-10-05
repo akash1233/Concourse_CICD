@@ -4,8 +4,6 @@ source "${BASH_SOURCE%/*}/flow-env.sh"
 set -e -x
 npm install -g yarn
 
-buildcopy iom-ui
-buildcopy iom-approval-ui
 
 buildcopy(){
 cd ./$1
@@ -17,3 +15,8 @@ chmod 777 $DIST_DIRECTORY
 cp -r ./$DIST_DIRECTORY/* ../dist/$1/
 ls -lrt
 }
+
+buildcopy iom-ui
+buildcopy iom-approval-ui
+
+
