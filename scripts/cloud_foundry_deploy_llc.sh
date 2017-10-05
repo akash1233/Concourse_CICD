@@ -25,18 +25,17 @@ deployui() {
     echo "deploy started  for iom ui"
     cd ../code-repo/iom-ui
     ls -ltr
-    ls ../../deploy-repo/
-    ls ../../
+    mkdir -p dist  && chmod 777 dist
     cp ../../deploy-repo/iom-ui/* ./dist/ -rf
     ls -lrt ./dist/
-    cf push -f ${ENVIRONMENT}.manifest.yml
+    ls -ltr
     cf push -f ${ENVIRONMENT}.manifest.yml
     echo "deploy completed  for iom ui"
-
     # Deployment for approval ui
     echo "deploy started  for iom approval ui"
     cd ../iom-approval-ui
     ls -ltr
+    mkdir -p dist  && chmod 777 dist
     cp ../../deploy-repo/iom-approval-ui/* ./dist/ -rf
     ls -lrt ./dist/
     cf push -f ${ENVIRONMENT}.manifest.yml
