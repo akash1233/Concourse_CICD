@@ -18,6 +18,7 @@ installcfcli() {
 }
 
 logintoconcourse() {
+    echo " logging to concourse with following api ${CF_API} and org ${CF_ORG} and  space ${CF_SPACE}"
     cf login -a ${CF_API} -u ${DEPLOYMENT_USER} -p ${DEPLOYMENT_PWD} -o ${CF_ORG} -s ${CF_SPACE}
 }
 
