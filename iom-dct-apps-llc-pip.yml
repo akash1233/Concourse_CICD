@@ -699,7 +699,7 @@ jobs:
     file: ci/concourse/sqh.yml
     input_mapping: {code-repo: code-repo-dct-dev}
     params:
-      SQH_BUILD_NAME: pcf
+      SQH_BUILD_NAME: pcf-deployservice
       SQH_JOB_NAME: DEPLOY-DEV
       SQH_STATUS: STARTED
       ENVIRONMENT: development 
@@ -716,7 +716,7 @@ jobs:
           code-repo: code-repo-dct-dev
           test-results: test
         params:
-          SQH_BUILD_NAME: pcf
+          SQH_BUILD_NAME: pcf-deployservice
           SQH_JOB_NAME: DEPLOY-DEV
           SQH_STATUS: FAILED
           ENVIRONMENT: development 
@@ -748,7 +748,7 @@ jobs:
           code-repo: code-repo-dct-dev
           test-results: test
         params:
-          SQH_BUILD_NAME: artifactory
+          SQH_BUILD_NAME: pcf-deployservice
           SQH_JOB_NAME: ARTIFACT
           SQH_STATUS: FAILED
           ENVIRONMENT: dev
@@ -785,7 +785,7 @@ jobs:
           code-repo: code-repo-dct-dev
           test-results: test
         params:
-          SQH_BUILD_NAME: pcf
+          SQH_BUILD_NAME: pcf-deployservice
           SQH_JOB_NAME: DEPLOY-DEV
           SQH_STATUS: FAILED
           ENVIRONMENT: development 
@@ -804,7 +804,7 @@ jobs:
     file: ci/concourse/sqh.yml
     input_mapping: {code-repo: code-repo-dct-dev}
     params:
-      SQH_BUILD_NAME: pcf
+      SQH_BUILD_NAME: pcf-deployservice
       SQH_JOB_NAME: DEPLOY-DEV
       SQH_STATUS: COMPLETED
       ENVIRONMENT: development
@@ -821,7 +821,7 @@ jobs:
           code-repo: code-repo-dct-dev
           test-results: test
         params:
-          SQH_BUILD_NAME: pcf
+          SQH_BUILD_NAME: pcf-deployservice
           SQH_JOB_NAME: DEPLOY-DEV
           SQH_STATUS: FAILED
           ENVIRONMENT: development #TODO: use the appropriate environment name from your buildConfig that matches
@@ -850,7 +850,7 @@ jobs:
     file: ci/concourse/sqh.yml
     input_mapping: {code-repo: code-repo-dct-dev}
     params:
-      SQH_BUILD_NAME: pcf
+      SQH_BUILD_NAME: pcf-deployui
       SQH_JOB_NAME: DEPLOY-DEV
       SQH_STATUS: STARTED
       ENVIRONMENT: development
@@ -867,7 +867,7 @@ jobs:
           code-repo: code-repo-dct-dev
           test-results: test
         params:
-          SQH_BUILD_NAME: pcf
+          SQH_BUILD_NAME: pcf-deployui
           SQH_JOB_NAME: DEPLOY-DEV
           SQH_STATUS: FAILED
           ENVIRONMENT: development
@@ -900,7 +900,7 @@ jobs:
           code-repo: code-repo-dct-dev
           test-results: test
         params:
-          SQH_BUILD_NAME: artifactory
+          SQH_BUILD_NAME: pcf-deployui
           SQH_JOB_NAME: ARTIFACT
           SQH_STATUS: FAILED
           ENVIRONMENT: dev
@@ -937,7 +937,7 @@ jobs:
           code-repo: code-repo-dct-dev
           test-results: test
         params:
-          SQH_BUILD_NAME: pcf
+          SQH_BUILD_NAME: pcf-deployui
           SQH_JOB_NAME: DEPLOY-DEV
           SQH_STATUS: FAILED
           ENVIRONMENT: development
@@ -956,7 +956,7 @@ jobs:
     file: ci/concourse/sqh.yml
     input_mapping: {code-repo: code-repo-dct-dev}
     params:
-      SQH_BUILD_NAME: pcf
+      SQH_BUILD_NAME: pcf-deployui
       SQH_JOB_NAME: DEPLOY-DEV
       SQH_STATUS: COMPLETED
       ENVIRONMENT: development
@@ -973,7 +973,7 @@ jobs:
           code-repo: code-repo-dct-dev
           test-results: test
         params:
-          SQH_BUILD_NAME: pcf
+          SQH_BUILD_NAME: pcf-deployui
           SQH_JOB_NAME: DEPLOY-DEV
           SQH_STATUS: FAILED
           ENVIRONMENT: development #TODO: use the appropriate environment name from your buildConfig that matches
@@ -995,11 +995,11 @@ jobs:
   plan:
   - get: code-repo-dct-dev
     trigger: true
-    passed: [Deploy DEV UI]
-    passed: [Deploy DEV Services]
+    passed: [Deploy DEV UI, Deploy DEV Services]
   - get: ci
   - get: ci-iom
   - get: repo-cache-dct
+  - get: repo-cache-dct-npm
   - task: SQH Started
     file: ci/concourse/sqh.yml
     input_mapping: {code-repo: code-repo-dct-dev}
@@ -1041,6 +1041,7 @@ jobs:
     input_mapping:
       code-repo: code-repo-dct-dev
       ci: ci-iom
+      repo-cache: repo-cache-dct-npm
     params:
       ENVIRONMENT: development
       TEST_OUTPUT_DIRECTORY: build/test-results
@@ -1113,8 +1114,7 @@ jobs:
   plan:
   - get: code-repo-dct-dev
     trigger: true
-    passed: [Deploy DEV UI]
-    passed: [Deploy DEV Services]
+    passed: [Deploy DEV UI, Deploy DEV Services]
   - get: ci
   - get: ci-iom
   - get: repo-cache-dct
@@ -1832,8 +1832,8 @@ jobs:
     file: ci/concourse/sqh.yml
     input_mapping: {code-repo: code-repo-dct-qa}
     params:
-      SQH_BUILD_NAME: pcf
-      SQH_JOB_NAME: DEPLOY-DEV
+      SQH_BUILD_NAME: pcf-deploy-service-qa
+      SQH_JOB_NAME: DEPLOY-QA
       SQH_STATUS: STARTED
       ENVIRONMENT: qa
       GITHUB_PRIVATE_KEY: ((github-private-key))
@@ -1849,8 +1849,8 @@ jobs:
           code-repo: code-repo-dct-qa
           test-results: test
         params:
-          SQH_BUILD_NAME: pcf
-          SQH_JOB_NAME: DEPLOY-DEV
+          SQH_BUILD_NAME: pcf-deploy-service-qa
+          SQH_JOB_NAME: DEPLOY-QA
           SQH_STATUS: FAILED
           ENVIRONMENT: qa
           GITHUB_PRIVATE_KEY: ((github-private-key))
@@ -1881,7 +1881,7 @@ jobs:
           code-repo: code-repo-dct-qa
           test-results: test
         params:
-          SQH_BUILD_NAME: artifactory
+          SQH_BUILD_NAME: pcf-deploy-service-qa
           SQH_JOB_NAME: ARTIFACT
           SQH_STATUS: FAILED
           ENVIRONMENT: qa
@@ -1908,7 +1908,7 @@ jobs:
       SLACK_WEBHOOK_URL: ((slack-webhook-url))
       CF_API: ((cf-api-dev))
       CF_ORG: ((cf-org-dev))
-      CF_SPACE: ((cf-space-dev))
+      CF_SPACE: ((cf-space-qa))
       DEPLOY_TYPE: SERVICES
     on_failure:
       aggregate:
@@ -1918,7 +1918,7 @@ jobs:
           code-repo: code-repo-dct-qa
           test-results: test
         params:
-          SQH_BUILD_NAME: pcf
+          SQH_BUILD_NAME: pcf-deploy-service-qa
           SQH_JOB_NAME: DEPLOY-QA
           SQH_STATUS: FAILED
           ENVIRONMENT: qa
@@ -1937,7 +1937,7 @@ jobs:
     file: ci/concourse/sqh.yml
     input_mapping: {code-repo: code-repo-dct-qa}
     params:
-      SQH_BUILD_NAME: pcf
+      SQH_BUILD_NAME: pcf-deploy-service-qa
       SQH_JOB_NAME: DEPLOY-QA
       SQH_STATUS: COMPLETED
       ENVIRONMENT: qa
@@ -1954,7 +1954,7 @@ jobs:
           code-repo: code-repo-dct-qa
           test-results: test
         params:
-          SQH_BUILD_NAME: pcf
+          SQH_BUILD_NAME: pcf-deploy-service-qa
           SQH_JOB_NAME: DEPLOY-QA
           SQH_STATUS: FAILED
           ENVIRONMENT: qa #TODO: use the appropriate environment name from your buildConfig that matches
@@ -1984,7 +1984,7 @@ jobs:
     file: ci/concourse/sqh.yml
     input_mapping: {code-repo: code-repo-dct-qa}
     params:
-      SQH_BUILD_NAME: pcf
+      SQH_BUILD_NAME: pcf-deployui-qa
       SQH_JOB_NAME: DEPLOY-QA
       SQH_STATUS: STARTED
       ENVIRONMENT: qa
@@ -2001,7 +2001,7 @@ jobs:
           code-repo: code-repo-dct-qa
           test-results: test
         params:
-          SQH_BUILD_NAME: pcf
+          SQH_BUILD_NAME: pcf-deployui-qa
           SQH_JOB_NAME: DEPLOY-QA
           SQH_STATUS: FAILED
           ENVIRONMENT: qa
@@ -2034,7 +2034,7 @@ jobs:
           code-repo: code-repo-dct-qa
           test-results: test
         params:
-          SQH_BUILD_NAME: artifactory
+          SQH_BUILD_NAME: pcf-deployui-qa
           SQH_JOB_NAME: ARTIFACT
           SQH_STATUS: FAILED
           ENVIRONMENT: qa
@@ -2061,7 +2061,7 @@ jobs:
       SLACK_WEBHOOK_URL: ((slack-webhook-url))
       CF_API: ((cf-api-dev))
       CF_ORG: ((cf-org-dev))
-      CF_SPACE: ((cf-space-dev))
+      CF_SPACE: ((cf-space-qa))
       DEPLOY_TYPE: UI
     on_failure:
       aggregate:
@@ -2071,7 +2071,7 @@ jobs:
           code-repo: code-repo-dct-qa
           test-results: test
         params:
-          SQH_BUILD_NAME: pcf
+          SQH_BUILD_NAME: pcf-deployui-qa
           SQH_JOB_NAME: DEPLOY-QA
           SQH_STATUS: FAILED
           ENVIRONMENT: qa
@@ -2090,7 +2090,7 @@ jobs:
     file: ci/concourse/sqh.yml
     input_mapping: {code-repo: code-repo-dct-qa}
     params:
-      SQH_BUILD_NAME: pcf
+      SQH_BUILD_NAME: pcf-deployui-qa
       SQH_JOB_NAME: DEPLOY-QA
       SQH_STATUS: COMPLETED
       ENVIRONMENT: qa
@@ -2107,7 +2107,7 @@ jobs:
           code-repo: code-repo-dct-qa
           test-results: test
         params:
-          SQH_BUILD_NAME: pcf
+          SQH_BUILD_NAME: pcf-deployui-qa
           SQH_JOB_NAME: DEPLOY-QA
           SQH_STATUS: FAILED
           ENVIRONMENT: qa

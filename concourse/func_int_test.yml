@@ -7,11 +7,12 @@ image_resource:
 inputs:
   - name: code-repo
   - name: ci
+  - name: repo-cache
 
 
 outputs:
 - name: tests
 
 run:
-  dir: ci
-  path: ./scripts/func-test.sh
+  dir: code-repo
+  path: ./ci/scripts/func-test.sh
