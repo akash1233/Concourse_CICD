@@ -1,7 +1,9 @@
 #!/bin/bash
 source "${BASH_SOURCE%/*}/flow-env.sh"
 
-set -e -x
+set -e
+
+
 echo "Deployment repo content"
 ls -lrt ../deploy-repo
 
@@ -92,6 +94,7 @@ deployservices() {
 
 installcfcli
 logintoconcourse
+set -x
 
 if [ -z "${DEPLOY_TYPE}" ]
 then

@@ -2,7 +2,7 @@
 
 source "${BASH_SOURCE%/*}/flow-env.sh"
 
-set -e -x
+set -e
 
 
 echo "Deployment repo content"
@@ -16,6 +16,8 @@ echo "deploying apps to ZONE ${ENVIRONMENT}"
 
 
 cf login -a ${CF_API_ZONE_URL} -u ${DEPLOYMENT_USER} -p ${DEPLOYMENT_PWD} -o ${CF_ORG} -s ${CF_SPACE}
+
+set -x
 
 #echo "start db2Svc service update"
 #cf cups db2Svc -p '{"uri": "'${DB2_FULL_URL}'"}' || cf uups db2Svc -p '{"uri": "'${DB2_FULL_URL}'"}'
