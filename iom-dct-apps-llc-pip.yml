@@ -104,6 +104,7 @@ groups:
 
 jobs:
 - name: Version DEV
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-dev
@@ -128,6 +129,7 @@ jobs:
         text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed versioning! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
 - name: Unit Test DEV
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-dev
@@ -206,42 +208,6 @@ jobs:
           username: ((slack-username))
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed testing! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-  - task: ZipAndShip test results (Artifactory)
-    file: ci/concourse/zipitshipit_artifactory.yml
-    input_mapping:
-      code-repo: code-repo-dct-dev
-      zipitdirectory: test
-    params:
-      ENVIRONMENT: development
-      ZIP_NAME: unittest/unittest.tar
-      GITHUB_PRIVATE_KEY: ((github-private-key))
-      GITHUB_TOKEN: ((github-token))
-      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-      ARTIFACTORY_TOKEN: ((artifactory-token))
-    on_failure:
-      aggregate:
-      - task: SQH fail
-        file: ci/concourse/sqh.yml
-        input_mapping:
-          code-repo: code-repo-dct-dev
-          test-results: test
-        params:
-          SQH_BUILD_NAME: junit
-          SQH_JOB_NAME: UNIT-TEST
-          SQH_STATUS: FAILED
-          ENVIRONMENT: development
-          GITHUB_PRIVATE_KEY: ((github-private-key))
-          GITHUB_TOKEN: ((github-token))
-          TRACKER_TOKEN: ((tracker-token))
-          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-          token: ((qualityhub-token-dct))
-      - put: slack
-        params:
-          #TODO replace below channel name with your channel
-          channel: ((slack-channel))
-          username: ((slack-username))
-          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed shipping unit test to artifactory! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: SQH Complete
     file: ci/concourse/sqh_with_results.yml
     input_mapping:
@@ -283,6 +249,7 @@ jobs:
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 - name: Label Stories DEV
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-dev
@@ -307,6 +274,7 @@ jobs:
         icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
         text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed labeling stories in Tracker! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 - name: Code Quality DEV
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-dev
@@ -423,6 +391,7 @@ jobs:
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
 - name: Security Scan DEV
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-dev
@@ -538,6 +507,7 @@ jobs:
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
 - name: Build Artifact DEV
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-dev
@@ -687,6 +657,7 @@ jobs:
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
 - name: Deploy DEV Services
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-dev
@@ -838,6 +809,7 @@ jobs:
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 - name: Deploy DEV UI
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-dev
@@ -991,6 +963,7 @@ jobs:
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
 - name: Functional Integration Tests DEV
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-dev
@@ -1110,6 +1083,7 @@ jobs:
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
 - name: Functional Service Tests DEV
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-dev
@@ -1238,6 +1212,7 @@ jobs:
 
 
 - name: Version QA
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-qa
@@ -1262,6 +1237,7 @@ jobs:
         text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed versioning! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
 - name: Unit Test QA
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-qa
@@ -1340,42 +1316,6 @@ jobs:
           username: ((slack-username))
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed testing! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
-  - task: ZipAndShip test results (Artifactory)
-    file: ci/concourse/zipitshipit_artifactory.yml
-    input_mapping:
-      code-repo: code-repo-dct-qa
-      zipitdirectory: test
-    params:
-      ENVIRONMENT: qa
-      ZIP_NAME: unittest/unittest.tar
-      GITHUB_PRIVATE_KEY: ((github-private-key))
-      GITHUB_TOKEN: ((github-token))
-      SLACK_WEBHOOK_URL: ((slack-webhook-url))
-      ARTIFACTORY_TOKEN: ((artifactory-token))
-    on_failure:
-      aggregate:
-      - task: SQH fail
-        file: ci/concourse/sqh.yml
-        input_mapping:
-          code-repo: code-repo-dct-qa
-          test-results: test
-        params:
-          SQH_BUILD_NAME: junit
-          SQH_JOB_NAME: UNIT-TEST
-          SQH_STATUS: FAILED
-          ENVIRONMENT: qa
-          GITHUB_PRIVATE_KEY: ((github-private-key))
-          GITHUB_TOKEN: ((github-token))
-          TRACKER_TOKEN: ((tracker-token))
-          SLACK_WEBHOOK_URL: ((slack-webhook-url))
-          token: ((qualityhub-token-dct))
-      - put: slack
-        params:
-
-          channel: ((slack-channel))
-          username: ((slack-username))
-          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
-          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed shipping unit test to artifactory! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: SQH Complete
     file: ci/concourse/sqh_with_results.yml
     input_mapping:
@@ -1439,6 +1379,7 @@ jobs:
         icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
         text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed labeling stories in Tracker! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 - name: Code Quality QA
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-qa
@@ -1555,6 +1496,7 @@ jobs:
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
 - name: Security Scan QA
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-qa
@@ -1670,6 +1612,7 @@ jobs:
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
 - name: Build Artifact QA
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-qa
@@ -1820,6 +1763,7 @@ jobs:
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
 - name: Deploy QA Services
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-qa
@@ -1972,6 +1916,7 @@ jobs:
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
 - name: Deploy QA UI
+  serial: true
   max_in_flight: 1
   plan:
   - get: code-repo-dct-qa

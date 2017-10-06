@@ -15,4 +15,4 @@ outputs:
 
 run:
   dir: code-repo
-  path: ./ci/scripts/func-test.sh
+  path: ../ci/scripts/func-test.sh
