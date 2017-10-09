@@ -14,8 +14,8 @@ wget -qO- 'https://cli.run.pivotal.io/stable?release=linux64-binary&source=githu
 
 echo "deploying apps to ZONE ${ENVIRONMENT}"
 
-echo " logging to concourse with following api ${CF_API_ZONE_URL} and org ${CF_ORG} and  space ${CF_SPACE}"
-cf login -a ${CF_API_ZONE_URL} -u ${DEPLOYMENT_USER} -p ${DEPLOYMENT_PWD} -o ${CF_ORG} -s ${CF_SPACE}
+echo " logging to concourse with following api ${CF_API_ZONE_URL} and org "${CF_ORG}" and  space "${CF_SPACE}" "
+cf login -a ${CF_API_ZONE_URL} -u ${DEPLOYMENT_USER} -p ${DEPLOYMENT_PWD} -o "${CF_ORG}" -s "${CF_SPACE}"
 
 set -x
 
