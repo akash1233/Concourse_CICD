@@ -6,6 +6,7 @@ if [[ -z "${LOCKSMITH_URL}" ]]; then
   echo "LOCKSMITH_URL is not set, defaulting to http://locksmith-api.apps-zb.homedepot.com/api/grants"
   LOCKSMITH_URL="http://locksmith-api.apps-zb.homedepot.com/api/grants"
 fi
+ #TODO this script needs to be approved
  CHG_NUMBER="CHG0300505"
   # get CHG # from environment (e.g. $CHG_NUMBER)
   echo "invoking LockSmith for $CHG_NUMBER"
