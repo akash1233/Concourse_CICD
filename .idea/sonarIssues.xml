@@ -123,6 +123,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-approval-service/perf.manifest.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-approval-service/prodza.manifest.yml">
           <value>
             <set />
@@ -178,6 +183,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-ui-services/perf.manifest.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-ui-services/prodza.manifest.yml">
           <value>
             <set />
@@ -214,6 +224,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-ui/prodzb.manifest.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-xfer-services/perf.manifest.yml">
           <value>
             <set />
           </value>

@@ -1,7 +1,7 @@
 #!/bin/bash
 source "${BASH_SOURCE%/*}/flow-env.sh"
 
-set -e
+set -e -x
 
 
 echo "Deployment repo content"
@@ -19,7 +19,7 @@ installcfcli() {
 
 logintoconcourse() {
     echo " logging to concourse with following api ${CF_API} and org ${CF_ORG} and  space ${CF_SPACE}"
-    cf login -a ${CF_API} -u ${DEPLOYMENT_USER} -p ${DEPLOYMENT_PWD} -o ${CF_ORG} -s ${CF_SPACE}
+    cf login -a "${CF_API}" -u "${DEPLOYMENT_USER}" -p "${DEPLOYMENT_PWD}" -o "${CF_ORG}" -s "${CF_SPACE}"
 }
 
 
@@ -95,7 +95,6 @@ deployservices() {
 
 installcfcli
 logintoconcourse
-set -x
 
 if [ -z "${DEPLOY_TYPE}" ]
 then
