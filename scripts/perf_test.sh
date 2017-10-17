@@ -14,9 +14,9 @@ cd ../code-repo
 
 ./gradlew assemble --stacktrace
 
-./gradlew jmRun --stacktrace
+./gradlew jmRun --debug
 
-./gradlew jmReport --stacktrace
+./gradlew jmReport --debug
 
 # convert jmeter xml test results to junit
 
