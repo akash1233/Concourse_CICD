@@ -114,6 +114,7 @@ groups:
    jobs:
     - Version PERF
     - Deploy PERF Services
+    - Performance Tests
 
 
 
