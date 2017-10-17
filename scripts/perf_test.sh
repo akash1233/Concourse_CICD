@@ -9,7 +9,10 @@ ls -al
 
 cd ../code-repo
 
-cd $PERF_PROJECT
+#cd $PERF_PROJECT
+
+
+./gradlew assemble --stacktrace
 
 ./gradlew jmRun --stacktrace
 
