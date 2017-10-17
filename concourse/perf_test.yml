@@ -1,0 +1,16 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: docker.artifactory.homedepot.com/flow/java
+    tag: "latest"
+inputs:
+  - name: code-repo
+  - name: repo-cache
+
+run:
+  dir: code-repo
+  path: iom-concourse/scripts/perf_test.sh
+
+outputs:
+  - name: test

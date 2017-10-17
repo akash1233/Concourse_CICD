@@ -48,6 +48,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/concourse/perf_test.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/concourse/yarn_build.yml">
           <value>
             <set />
@@ -108,6 +113,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/scripts/perf_test.sh">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/scripts/yarn_build.sh">
           <value>
             <set />
@@ -123,6 +133,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-approval-service/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-approval-service/perf.manifest.yml">
           <value>
             <set />
@@ -134,6 +149,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-approval-service/prodzb.manifest.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-approval-service/src/test/java/com/homedepot/mm/po/iom/approvals/rest/ApprovalDAO_ESTest.java">
           <value>
             <set />
           </value>
@@ -168,6 +188,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-scheduler/perf.manifest.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-scheduler/prodza.manifest.yml">
           <value>
             <set />
@@ -179,6 +204,16 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-scheduler/zb.iom-scheduler.manifest.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-ui-services/build/jmeter-report/50-concurrent-user-thread.jmx-20171017-1155.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-ui-services/build/jmeter-report/jmeter.log">
           <value>
             <set />
           </value>
@@ -249,6 +284,16 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-xfer-services/za.iom-xfer-service.manifest.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../jmeter-junit/README.md">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../jmeter-junit/pom.xml">
           <value>
             <set />
           </value>
