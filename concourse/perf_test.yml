@@ -7,6 +7,7 @@ image_resource:
 inputs:
   - name: code-repo
   - name: repo-cache
+  - name: ci
 
 run:
   dir: code-repo
