@@ -6,6 +6,9 @@ set -e -x
 
 ls -al
 
+
+cd ../code-repo
+
 cd $PERF_PROJECT
 
 ./gradlew jmRun --debug

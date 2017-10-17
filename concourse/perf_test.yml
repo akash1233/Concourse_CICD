@@ -4,14 +4,15 @@ image_resource:
   source:
     repository: docker.artifactory.homedepot.com/flow/java
     tag: "latest"
+
 inputs:
   - name: code-repo
   - name: repo-cache
   - name: ci
 
 run:
-  dir: code-repo
-  path: ../ci/concourse/scripts/perf_test.sh
+  dir: ci
+  path: ./concourse/scripts/perf_test.sh
 
 outputs:
   - name: test
