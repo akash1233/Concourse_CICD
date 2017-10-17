@@ -218,6 +218,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-ui-services/gradle/wrapper/gradle-wrapper.properties">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-ui-services/perf.manifest.yml">
           <value>
             <set />

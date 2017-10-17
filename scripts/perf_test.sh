@@ -11,9 +11,9 @@ cd ../code-repo
 
 cd $PERF_PROJECT
 
-./gradlew jmRun --debug
+./gradlew jmRun --stacktrace
 
-./gradlew jmReport --debug
+./gradlew jmReport --stacktrace
 
 # convert jmeter xml test results to junit
 
