@@ -21,9 +21,9 @@ cd ../code-repo
 
 wget "https://maven.artifactory.homedepot.com/artifactory/libs-release/org/apache/jmeter-junit/0.1/jmeter-junit-0.1.jar"
 
-chmod 777 $TEST_OUTPUT_DIRECTORY
-
-ls -al ./$TEST_OUTPUT_DIRECTORY/
+#chmod 777 $TEST_OUTPUT_DIRECTORY
+#
+#ls -al ./$TEST_OUTPUT_DIRECTORY/
 
 #java -jar jmeter-junit-0.1.jar --input $TEST_OUTPUT_DIRECTORY/*.xml --output ../tests/junit.xml
 #
