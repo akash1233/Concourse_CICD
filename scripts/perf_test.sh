@@ -11,7 +11,6 @@ cd ../code-repo
 
 #cd $PERF_PROJECT
 
-
 ./gradlew assemble --stacktrace
 
 ./gradlew jmRun --debug
@@ -26,8 +25,8 @@ chmod 777 $TEST_OUTPUT_DIRECTORY
 
 ls -al ./$TEST_OUTPUT_DIRECTORY/
 
-java -jar jmeter-junit-0.1.jar --input $TEST_OUTPUT_DIRECTORY/*.xml --output ../tests/junit.xml
-
-ls -al
+#java -jar jmeter-junit-0.1.jar --input $TEST_OUTPUT_DIRECTORY/*.xml --output ../tests/junit.xml
+#
+#ls -al
 
 #cp -a ./$TEST_OUTPUT_DIRECTORY/. ../tests
