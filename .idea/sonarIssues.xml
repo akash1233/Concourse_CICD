@@ -123,6 +123,16 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/README.md">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/buildConfig.json">
           <value>
             <set />
@@ -284,6 +294,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-xfer-services/prodzb.manifest.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../iom-dct-apps/iom-xfer-services/qa.manifest.yml">
           <value>
             <set />
           </value>
