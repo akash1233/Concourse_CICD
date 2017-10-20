@@ -7,7 +7,7 @@ if [[ -z "${LOCKSMITH_URL}" ]]; then
   LOCKSMITH_URL="http://locksmith-api.apps-zb.homedepot.com/api/grants"
 fi
  #TODO this script needs to be approved
- CHG_NUMBER="CHG0300505"
+ CHG_NUMBER="CHG0303297"
   # get CHG # from environment (e.g. $CHG_NUMBER)
   echo "invoking LockSmith for $CHG_NUMBER"
 
