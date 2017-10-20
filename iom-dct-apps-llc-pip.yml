@@ -2117,7 +2117,7 @@ jobs:
       SQH_BUILD_NAME: restassured-servicetests
       SQH_JOB_NAME: FUNCTIONAL-SERVICE-TEST
       SQH_STATUS: STARTED
-      ENVIRONMENT: development
+      ENVIRONMENT: qa
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
       TRACKER_TOKEN: ((tracker-token))
