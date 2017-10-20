@@ -1093,7 +1093,7 @@ jobs:
     file: ci-iom/concourse/func_int_servicetest.yml
     input_mapping: {code-repo: code-repo-dct-dev , repo-cache: repo-cache-dct , ci: ci-iom}
     params:
-      ENVIRONMENT: development
+      ENVIRONMENT: dev
       TEST_OUTPUT_DIRECTORY: build/test-results/funcIntegrationTest
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
@@ -2150,7 +2150,7 @@ jobs:
     file: ci-iom/concourse/func_int_servicetest.yml
     input_mapping: {code-repo: code-repo-dct-qa , repo-cache: repo-cache-dct , ci: ci-iom}
     params:
-      ENVIRONMENT: development
+      ENVIRONMENT: qa
       TEST_OUTPUT_DIRECTORY: build/test-results/funcIntegrationTest
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))

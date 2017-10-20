@@ -8,7 +8,7 @@ ls -al
 
 cd ../code-repo
 
-./gradlew funcIntegrationTest ${ENVIRONMENT}
+./gradlew funcIntegrationTest -DTESTENV=${ENVIRONMENT}
 
 chmod 777 $TEST_OUTPUT_DIRECTORY
 
