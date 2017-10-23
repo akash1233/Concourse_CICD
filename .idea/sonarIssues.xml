@@ -23,6 +23,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/concourse/cloud_foundry_deploy_bg.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/concourse/cloud_foundry_deploy_llc.yml">
           <value>
             <set />
@@ -59,6 +64,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/iom-dct-apps-dev.yml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/iom-dct-apps-llc-deploytest.yml">
           <value>
             <set />
           </value>
