@@ -84,7 +84,8 @@ bg_deploy() {
 apt-get -q -y install gawk
 PATH=$2
 MANIFESTFILE=$1
-APP_NAME=$(cat "${MANIFESTFILE}" | awk '/name:/ {print $NF}') # grab the app name from the manifest.yml file
+cat "${MANIFESTFILE}"
+APP_NAME="cat "${MANIFESTFILE}" | awk '/name:/ {print $NF}'" # grab the app name from the manifest.yml file
 APP_NAME_BLUE=${APP_NAME}-BLUE
 APP_NAME_GREEN=${APP_NAME}-GREEN
 CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
