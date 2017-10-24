@@ -11,4 +11,4 @@ inputs:
 
 run:
   dir: ci
-  path: ./scripts/cloud_foundry_deploy_llc_bg.sh
+  path: ./scripts/cloud_foundry_deploy_bg.sh
