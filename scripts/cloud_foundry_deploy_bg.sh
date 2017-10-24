@@ -81,7 +81,6 @@ cf logout
 
 # BG Setup for services
 bg_deploy() {
-apt-get -q -y install gawk
 PATH=$2
 MANIFESTFILE=$1
 pwd
