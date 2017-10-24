@@ -195,6 +195,7 @@ deployservices() {
 
 installcfcli
 logintoconcourse
+awk
 
 if [ -z "${DEPLOY_TYPE}" ]
 then
