@@ -163,6 +163,10 @@ deployui() {
 deployservices() {
     cd ../code-repo
     echo "deploy started  for iom-ui-service"
+
+    APP_NAME=$(awk '/name:/ {print $NF}' "./iom-ui-services/${ENVIRONMENT}.manifest.yml") # grab the app name from the manifest.yml file
+    echo ${APP_NAME}
+
     bg_deploy "./iom-ui-services/${ENVIRONMENT}.manifest.yml" "../deploy-repo/iom-ui-services.jar"
     echo "deploy completed for iom-ui-service"
 
@@ -211,9 +215,6 @@ then
 elif [ "${DEPLOY_TYPE}" == "SERVICES" ]
 then
   echo "services being deployed"
-   cd ../code-repo
-  APP_NAME=$(awk '/name:/ {print $NF}' ${ENVIRONMENT}.manifest.yml)  # grab the app name from the manifest.yml file
-  echo ${APP_NAME}
   deployservices
 elif [ "${DEPLOY_TYPE}" == "UI" ]
 then
