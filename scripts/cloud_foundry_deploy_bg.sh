@@ -81,9 +81,10 @@ cf logout
 
 # BG Setup for services
 bg_deploy() {
+apt-get install gawk
 PATH=$2
 MANIFESTFILE=$1
-APP_NAME=$(awk '/name:/ {print $NF}' ${MANIFESTFILE})  # grab the app name from the manifest.yml file
+APP_NAME=awk '/name:/ {print $NF}' ${MANIFESTFILE}  # grab the app name from the manifest.yml file
 APP_NAME_BLUE=${APP_NAME}-BLUE
 APP_NAME_GREEN=${APP_NAME}-GREEN
 CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
@@ -122,7 +123,7 @@ echo "target app name: '${APP_NAME_TARGET}'"
 
 echo "cf push application"
 
-cf push ${APP_NAME_TARGET} -f $1 -p ${PATH}
+cf push ${APP_NAME_TARGET} -f $MANIFESTFILE -p ${PATH}
 echo "cf logout"
 cf logout
 }
@@ -196,7 +197,6 @@ deployservices() {
 
 installcfcli
 logintoconcourse
-awk
 
 if [ -z "${DEPLOY_TYPE}" ]
 then

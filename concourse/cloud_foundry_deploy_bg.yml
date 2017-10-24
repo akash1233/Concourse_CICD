@@ -3,7 +3,7 @@ image_resource:
   type: docker-image
   source:
     repository: docker.artifactory.homedepot.com/flow/java
-    tag: "latest"
+    tag: latest
 inputs:
   - name: code-repo
   - name: deploy-repo
