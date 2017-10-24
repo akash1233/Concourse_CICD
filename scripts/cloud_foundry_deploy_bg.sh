@@ -88,7 +88,7 @@ pwd
 
 ls -lrt
 
-APP_NAME=`awk '/name:/ {print $NF}' ${MANIFESTFILE}` # grab the app name from the manifest.yml file
+APP_NAME=`awk '/name:/ {print $NF}' "${MANIFESTFILE}"` # grab the app name from the manifest.yml file
 
 APP_NAME_BLUE=${APP_NAME}-BLUE
 
@@ -211,6 +211,9 @@ then
 elif [ "${DEPLOY_TYPE}" == "SERVICES" ]
 then
   echo "services being deployed"
+   cd ../code-repo
+  APP_NAME=$(awk '/name:/ {print $NF}' ${ENVIRONMENT}.manifest.yml)  # grab the app name from the manifest.yml file
+  echo ${APP_NAME}
   deployservices
 elif [ "${DEPLOY_TYPE}" == "UI" ]
 then
