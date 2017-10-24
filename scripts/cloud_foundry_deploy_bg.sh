@@ -81,14 +81,15 @@ cf logout
 
 # BG Setup for services
 bg_deploy() {
-PATH=$1
-APP_NAME=$(awk '/name:/ {print $NF}' $1)  # grab the app name from the manifest.yml file
+PATH=$2
+MANIFESTFILE=$1
+APP_NAME=$(awk '/name:/ {print $NF}' ${MANIFESTFILE})  # grab the app name from the manifest.yml file
 APP_NAME_BLUE=${APP_NAME}-BLUE
 APP_NAME_GREEN=${APP_NAME}-GREEN
 CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
 
 # get the app name from manifest file
-ROUTE_NAME=$(awk '/host:/ {print $NF}' $1)  # grab the route name from the manifest.yml file
+ROUTE_NAME=$(awk '/host:/ {print $NF}' ${MANIFESTFILE})  # grab the route name from the manifest.yml file
 
 # get the route name
 if [[ -z ${ROUTE_NAME} ]]; then
@@ -121,7 +122,7 @@ echo "target app name: '${APP_NAME_TARGET}'"
 
 echo "cf push application"
 
-cf push ${APP_NAME_TARGET} -f $1 -p $2
+cf push ${APP_NAME_TARGET} -f $1 -p ${PATH}
 echo "cf logout"
 cf logout
 }
