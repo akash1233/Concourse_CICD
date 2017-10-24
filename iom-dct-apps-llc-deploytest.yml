@@ -287,7 +287,7 @@ jobs:
       SLACK_WEBHOOK_URL: ((slack-webhook-url))
       CF_API: ((cf-api-dev))
       CF_ORG: ((cf-org-dev))
-      CF_SPACE: ((cf-space-dev))
+      CF_SPACE: ((cf-space-perf))
       DEPLOY_TYPE: SERVICES
     on_failure:
       aggregate:
