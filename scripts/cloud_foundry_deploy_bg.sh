@@ -123,7 +123,6 @@ fi
 #cf rename$BLUE${timestamp} $BLUE
 cf delete $BLUE -f
 cf rename $GREEN $BLUE
-cf delete-route $CF_DOMAIN -n $GREEN -f
 
 finally
 echo "Blue Green Deploy Completed"
