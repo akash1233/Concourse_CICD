@@ -83,13 +83,15 @@ cf logout
 bg_deploy() {
 MANIFESTFILE=$1
 PATH=$2
-eval "APP_NAME=$(awk '/name:/ {print $NF}' ${MANIFESTFILE})" # grab the app name from the manifest.yml file
+eval "cat ${MANIFESTFILE}"
+#eval "APP_NAME=$(awk '/name:/ {print $NF}' "perf.manifest.yml")"
+eval "APP_NAME=$(awk '/name:/ {print $NF}' "${MANIFESTFILE}")" # grab the app name from the manifest.yml file
 APP_NAME_BLUE=${APP_NAME}-BLUE
 APP_NAME_GREEN=${APP_NAME}-GREEN
 eval "CF_DOMAIN=$(echo $CF_API | cut -d '-' -f 2)"
 
 # get the app name from manifest file
-eval "ROUTE_NAME=$(awk '/host:/ {print $NF}' ${MANIFESTFILE})"  # grab the route name from the manifest.yml file
+eval "ROUTE_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE}")"  # grab the route name from the manifest.yml file
 
 # get the route name
 if [[ -z ${ROUTE_NAME} ]]; then
@@ -103,7 +105,7 @@ CFAPPS=$(cf apps)
 
 echo "cf apps results:\n${CFAPPS}"
 echo "ROUTE_NAME: ${ROUTE_NAME}"
-eval "APP_NAME_ACTIVE=$(cf apps | awk -v routename=${ROUTE_NAME} '$0 ~ routename {print $1}')"
+eval "APP_NAME_ACTIVE=$(cf apps | awk -v routename="${ROUTE_NAME}" '$0 ~ routename {print $1}')"
 echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
 
 if [[ ! -z ${APP_NAME_ACTIVE} ]]; then
