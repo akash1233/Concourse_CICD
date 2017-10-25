@@ -97,12 +97,13 @@ TIMESTAPEDAPPNAME=${APP_NAME}$(date +%s)
 ROUTE_NAME=${ROUTE_NAME}.apps-${CF_DOMAIN}
 
 
-#Rename the active app with a timestamp and stop it
+#Rename the active app with a timestamp and stop it unmap the route
 if [[ "${APP_NAME_ACTIVE}" == "NA" ]]; then
     echo "No active app so going ahead with deployments"
    else
     echo "Renaming the app and timestamping it "
     cf rename ${APP_NAME_ACTIVE} ${TIMESTAPEDAPPNAME}
+    cf unmap-route ${TIMESTAPEDAPPNAME} apps-${CF_DOMAIN} -n ${APP_NAME_ACTIVE}
     cf stop ${TIMESTAPEDAPPNAME}
 fi
 
