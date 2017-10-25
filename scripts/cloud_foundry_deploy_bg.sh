@@ -95,8 +95,6 @@ GREEN="${BLUE}-B"
 #Specify the full route
 ROUTE_NAME=${ROUTE_NAME}.apps-${CF_DOMAIN}
 
-
-
 # create the GREEN application
 cf push $GREEN -f ${MANIFESTFILE} -p ${JARPATH} | tee pushoutput.txt
 
