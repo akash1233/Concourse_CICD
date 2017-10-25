@@ -103,7 +103,7 @@ BLUE=${APP_NAME}
 GREEN="${BLUE}-B"
 
 #Specify the full route
-ROUTE_NAME=${APP_NAME}.apps-${CF_DOMAIN}
+ROUTE_NAME=${ROUTE_NAME}.apps-${CF_DOMAIN}
 
 
 
