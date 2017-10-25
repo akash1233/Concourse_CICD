@@ -110,7 +110,7 @@ fi
 #cf map-route $GREEN ${ROUTE_NAME}
 
 #Stop the app
-cf stop $BLUE -f
+#cf stop $BLUE
 
 # cleanup
 # TODO consider 'stop'-ing the BLUE instead of deleting it, so that depedencies are cached for next time
