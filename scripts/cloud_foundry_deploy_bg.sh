@@ -34,7 +34,7 @@ logintoconcourse() {
 bg_deploy() {
 MANIFESTFILE=$1
 APP_NAME=$2
-ROUTE_NAME=$3
+HOSTNAME=$3
 JARPATH=$4
 CF_DOMAIN=$5
 APP_NAME_ACTIVE=$6
@@ -51,12 +51,12 @@ if [[ "${APP_NAME_ACTIVE}" == "NA" ]]; then
    else
     echo "Renaming the app and timestamping it "
     cf rename ${APP_NAME_ACTIVE} ${TIMESTAPEDAPPNAME}
-    cf unmap-route ${TIMESTAPEDAPPNAME} apps-${CF_DOMAIN} -n ${ROUTE_NAME}
+    cf unmap-route ${TIMESTAPEDAPPNAME} apps-${CF_DOMAIN} -n ${HOSTNAME}
     cf stop ${TIMESTAPEDAPPNAME}
 fi
 
 #Specify the full route name
-ROUTE_NAME=${ROUTE_NAME}.apps-${CF_DOMAIN}
+ROUTE_NAME=${HOSTNAME}.apps-${CF_DOMAIN}
 
 
 # create the GREEN application
@@ -116,110 +116,117 @@ deployui() {
 
 
 deployservices() {
+
     cd ../code-repo
     echo "deploy started  for iom-ui-service"
     MANIFESTFILE="./iom-ui-services/${ENVIRONMENT}.manifest.yml"
     APP_NAME=$(awk '/name:/ {print $NF}' "${MANIFESTFILE=}")
-    ROUTE_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
+    HOST_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
     JARPATH="../deploy-repo/iom-ui-services.jar"
     CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
     CFAPPS=$(cf apps)
     echo "cf apps results:\n${CFAPPS}"
     echo "ROUTE_NAME: ${ROUTE_NAME}"
-    APP_NAME_ACTIVE=$(cf apps | awk -v routename=${ROUTE_NAME} '$0 ~ routename {print $1}')
+    APP_NAME_ACTIVE=$(cf apps | awk -v routename=${HOST_NAME} '$0 ~ routename {print $1}')
     echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
     if [[ -z ${APP_NAME_ACTIVE} ]]; then
         echo " No Active App"
         APP_NAME_ACTIVE="NA"
     fi
-    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${ROUTE_NAME} ${JARPATH} ${CF_DOMAIN} ${APP_NAME_ACTIVE}
+    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${HOST_NAME} ${JARPATH} ${CF_DOMAIN} ${APP_NAME_ACTIVE}
     echo "deploy completed for iom-ui-service"
-#
-#    echo "deploy started  for iom-xfer-service"
-#    MANIFESTFILE="./iom-xfer-services/${ENVIRONMENT}.manifest.yml"
-#    APP_NAME=$(awk '/name:/ {print $NF}' "${MANIFESTFILE=}")
-#    ROUTE_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
-#    if [[ -z ${ROUTE_NAME} ]]; then
-#        echo "No Active Route Specified"
-#        ROUTE_NAME="NA"
-#    fi
-#    CFAPPS=$(cf apps)
-#    echo "cf apps results:\n${CFAPPS}"
-#    echo "ROUTE_NAME: ${ROUTE_NAME}"
-#    APP_NAME_ACTIVE=$(cf apps | awk -v routename=${ROUTE_NAME} '$0 ~ routename {print $1}')
-#    echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
-#    if [[ -z ${APP_NAME_ACTIVE} ]]; then
-#        echo " No Active App"
-#        APP_NAME_ACTIVE="NA"
-#    fi
-#    JARPATH="../deploy-repo/iom-ui-services.jar"
-#    CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
-#    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${ROUTE_NAME} ${APP_NAME_ACTIVE} ${JARPATH} ${CF_DOMAIN}
-#    echo "deploy completed for iom-xfer-service"
-#
-#    echo "deploy started  for iom-scheduler"
-#    MANIFESTFILE="./iom-scheduler/${ENVIRONMENT}.manifest.yml"
-#    APP_NAME=$(awk '/name:/ {print $NF}' "${MANIFESTFILE=}")
-#    ROUTE_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
-#    if [[ -z ${ROUTE_NAME} ]]; then
-#        echo "No Active Route Specified"
-#        ROUTE_NAME="NA"
-#    fi
-#    CFAPPS=$(cf apps)
-#    echo "cf apps results:\n${CFAPPS}"
-#    echo "ROUTE_NAME: ${ROUTE_NAME}"
-#    APP_NAME_ACTIVE=$(cf apps | awk -v routename=${ROUTE_NAME} '$0 ~ routename {print $1}')
-#    echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
-#    if [[ -z ${APP_NAME_ACTIVE} ]]; then
-#        echo " No Active App"
-#        APP_NAME_ACTIVE="NA"
-#    fi
-#    JARPATH="../deploy-repo/iom-scheduler.jar"
-#    CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
-#    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${ROUTE_NAME} ${APP_NAME_ACTIVE} ${JARPATH} ${CF_DOMAIN}
-#    echo "deploy completed for iom-scheduler"
-#
-#    echo "deploy started  for iom-approval-service"
-#    MANIFESTFILE="./iom-approval-service/${ENVIRONMENT}.manifest.yml"
-#    APP_NAME=$(awk '/name:/ {print $NF}' "${MANIFESTFILE=}")
-#    ROUTE_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
-#    if [[ -z ${ROUTE_NAME} ]]; then
-#        echo "No Active Route Specified"
-#        ROUTE_NAME="NA"
-#    fi
-#    CFAPPS=$(cf apps)
-#    echo "cf apps results:\n${CFAPPS}"
-#    echo "ROUTE_NAME: ${ROUTE_NAME}"
-#    APP_NAME_ACTIVE=$(cf apps | awk -v routename=${ROUTE_NAME} '$0 ~ routename {print $1}')
-#    echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
-#    if [[ -z ${APP_NAME_ACTIVE} ]]; then
-#        echo " No Active App"
-#        APP_NAME_ACTIVE="NA"
-#    fi
-#    JARPATH="../deploy-repo/iom-approval-service.jar"
-#    CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
-#    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${ROUTE_NAME} ${APP_NAME_ACTIVE} ${JARPATH} ${CF_DOMAIN}
-#    echo "deploy completed for iom-approval-service"
-#
-#    echo "Start list all the application in current space"
-#    cf apps
-#    echo "Complited list all the application in current space"
-#
-#    echo "Start iom-ui-service environment"
-#    cf env iom-ui-service
-#    echo "End iom-ui-service environment"
-#
-#    echo "Start iom-scheduler environment"
-#    cf env iom-scheduler
-#    echo "End iom-scheduler environment"
-#
-#    echo "Start iom-xfer-service environment"
-#    cf env iom-xfer-service
-#    echo "End iom-xfer-service environment"
-#
-#    echo "Start iom-approval-service environment"
-#    cf env iom-approval-service
-#    echo "End iom-xfer-service environment"
+
+    echo "----------------------------------------------------------------------------------------------------------------"
+    echo "----------------------------------------------------------------------------------------------------------------"
+
+    echo "deploy started  for iom-xfer-service"
+    MANIFESTFILE="./iom-xfer-services/${ENVIRONMENT}.manifest.yml"
+    APP_NAME=$(awk '/name:/ {print $NF}' "${MANIFESTFILE=}")
+    HOST_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
+    JARPATH="../deploy-repo/iom-xfer-services.jar"
+    CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
+    CFAPPS=$(cf apps)
+    echo "cf apps results:\n${CFAPPS}"
+    echo "ROUTE_NAME: ${ROUTE_NAME}"
+    APP_NAME_ACTIVE=$(cf apps | awk -v routename=${HOST_NAME} '$0 ~ routename {print $1}')
+    echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
+    if [[ -z ${APP_NAME_ACTIVE} ]]; then
+        echo " No Active App"
+        APP_NAME_ACTIVE="NA"
+    fi
+    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${HOST_NAME} ${JARPATH} ${CF_DOMAIN} ${APP_NAME_ACTIVE}
+    echo "deploy completed for iom-xfer-service"
+
+    echo "----------------------------------------------------------------------------------------------------------------"
+    echo "----------------------------------------------------------------------------------------------------------------"
+
+
+
+    echo "deploy started  for iom-scheduler"
+    MANIFESTFILE="./iom-scheduler/${ENVIRONMENT}.manifest.yml"
+    APP_NAME=$(awk '/name:/ {print $NF}' "${MANIFESTFILE=}")
+    HOST_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
+    JARPATH="../deploy-repo/iom-scheduler.jar"
+    CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
+    CFAPPS=$(cf apps)
+    echo "cf apps results:\n${CFAPPS}"
+    echo "ROUTE_NAME: ${ROUTE_NAME}"
+    APP_NAME_ACTIVE=$(cf apps | awk -v routename=${HOST_NAME} '$0 ~ routename {print $1}')
+    echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
+    if [[ -z ${APP_NAME_ACTIVE} ]]; then
+        echo " No Active App"
+        APP_NAME_ACTIVE="NA"
+    fi
+    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${HOST_NAME} ${JARPATH} ${CF_DOMAIN} ${APP_NAME_ACTIVE}
+    echo "deploy completed for iom-scheduler"
+
+
+    echo "----------------------------------------------------------------------------------------------------------------"
+    echo "----------------------------------------------------------------------------------------------------------------"
+
+
+
+    echo "deploy started  for iom-approval-service"
+    MANIFESTFILE="./iom-approval-service/${ENVIRONMENT}.manifest.yml"
+    APP_NAME=$(awk '/name:/ {print $NF}' "${MANIFESTFILE=}")
+    HOST_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
+    JARPATH="../deploy-repo/iom-approval-service.jar"
+    CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
+    CFAPPS=$(cf apps)
+    echo "cf apps results:\n${CFAPPS}"
+    echo "ROUTE_NAME: ${ROUTE_NAME}"
+    APP_NAME_ACTIVE=$(cf apps | awk -v routename=${HOST_NAME} '$0 ~ routename {print $1}')
+    echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
+    if [[ -z ${APP_NAME_ACTIVE} ]]; then
+        echo " No Active App"
+        APP_NAME_ACTIVE="NA"
+    fi
+    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${HOST_NAME} ${JARPATH} ${CF_DOMAIN} ${APP_NAME_ACTIVE}
+    echo "deploy completed for iom-approval-service"
+
+    echo "----------------------------------------------------------------------------------------------------------------"
+    echo "----------------------------------------------------------------------------------------------------------------"
+
+
+    echo "Start list all the application in current space"
+    cf apps
+    echo "Complited list all the application in current space"
+
+    echo "Start iom-ui-service environment"
+    cf env iom-ui-service
+    echo "End iom-ui-service environment"
+
+    echo "Start iom-scheduler environment"
+    cf env iom-scheduler
+    echo "End iom-scheduler environment"
+
+    echo "Start iom-xfer-service environment"
+    cf env iom-xfer-service
+    echo "End iom-xfer-service environment"
+
+    echo "Start iom-approval-service environment"
+    cf env iom-approval-service
+    echo "End iom-xfer-service environment"
 
 }
 
