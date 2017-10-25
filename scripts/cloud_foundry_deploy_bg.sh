@@ -86,14 +86,26 @@ APP_NAME=$2
 ROUTE_NAME=$3
 JARPATH=$4
 CF_DOMAIN=$5
+APP_NAME_ACTIVE=$6
 
 #Define the app types
-
 BLUE=${APP_NAME}
 GREEN="${BLUE}-B"
+TIMESTAPEDAPPNAME=${APP_NAME}$(date +%s)
 
 #Specify the full route
 ROUTE_NAME=${ROUTE_NAME}.apps-${CF_DOMAIN}
+
+
+#Rename the active app with a timestamp and stop it
+if [[ "${APP_NAME_ACTIVE}" == "NA" ]]; then
+    echo "No active app so going ahead with deployments"
+   else
+    echo "Renaming the app and timestamping it "
+    cf rename ${APP_NAME_ACTIVE} ${TIMESTAPEDAPPNAME}
+    cf stop ${TIMESTAPEDAPPNAME}
+fi
+
 
 # create the GREEN application
 cf push $GREEN -f ${MANIFESTFILE} -p ${JARPATH} | tee pushoutput.txt
@@ -106,7 +118,7 @@ else
 echo "Error Deploying!! requested state: started not found"
 exit 125
 fi
-#ROUTE Mapping
+
 #cf map-route $GREEN ${ROUTE_NAME}
 
 ##Stop the app
@@ -121,12 +133,8 @@ fi
 #cf rename $BLUE ${BLUETIMESTAMP}
 #cf rename $GREEN ${BLUETIMESTAMP}
 #cf rename$BLUE${timestamp} $BLUE
-cf delete $BLUE -f
 cf rename $GREEN $BLUE
-
-finally
 echo "Blue Green Deploy Completed"
-
 }
 
 
@@ -163,7 +171,16 @@ deployservices() {
     ROUTE_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
     JARPATH="../deploy-repo/iom-ui-services.jar"
     CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
-    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${ROUTE_NAME} ${JARPATH} ${CF_DOMAIN}
+    CFAPPS=$(cf apps)
+    echo "cf apps results:\n${CFAPPS}"
+    echo "ROUTE_NAME: ${ROUTE_NAME}"
+    APP_NAME_ACTIVE=$(cf apps | awk -v routename=${ROUTE_NAME} '$0 ~ routename {print $1}')
+    echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
+    if [[ -z ${APP_NAME_ACTIVE} ]]; then
+        echo " No Active App"
+        APP_NAME_ACTIVE="NA"
+    fi
+    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${ROUTE_NAME} ${JARPATH} ${CF_DOMAIN} {APP_NAME_ACTIVE}
     echo "deploy completed for iom-ui-service"
 #
 #    echo "deploy started  for iom-xfer-service"
