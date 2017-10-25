@@ -89,6 +89,9 @@ APP_NAME_ACTIVE=$4
 JARPATH=$5
 CF_DOMAIN=$6
 
+
+APP_NAME="awk '/name:/ {print $NF}' ${MANIFESTFILE=}"
+echo ${APP_NAME}
 #Define the app types
 APP_NAME_BLUE=${APP_NAME}-BLUE
 APP_NAME_GREEN=${APP_NAME}-GREEN

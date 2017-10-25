@@ -281,7 +281,7 @@ jobs:
     params:
       GITHUB_PRIVATE_KEY: ((github-private-key))
       GITHUB_TOKEN: ((github-token))
-      ENVIRONMENT: dev
+      ENVIRONMENT: perf
       DEPLOYMENT_USER: ((deployment-user))
       DEPLOYMENT_PWD: ((deployment-pwd))
       SLACK_WEBHOOK_URL: ((slack-webhook-url))
