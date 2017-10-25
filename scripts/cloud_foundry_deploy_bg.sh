@@ -30,55 +30,6 @@ logintoconcourse() {
 
 
 
-# BG Setup
-bg_deploy_ui() {
-APP_NAME=$(awk '/name:/ {print $NF}' ${ENVIRONMENT}.manifest.yml)  # grab the app name from the manifest.yml file
-APP_NAME_BLUE=${APP_NAME}-BLUE
-APP_NAME_GREEN=${APP_NAME}-GREEN
-CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
-
-# get the app name from manifest file
-ROUTE_NAME=$(awk '/host:/ {print $NF}' ${ENVIRONMENT}.manifest.yml)  # grab the route name from the manifest.yml file
-
-# get the route name
-if [[ -z ${ROUTE_NAME} ]]; then
-    echo "host configuration in manifest.yml does not exist, so defaulting to app name: '${APP_NAME}'"
-    ROUTE_NAME=${APP_NAME}
-fi
-
-ROUTE_NAME=${APP_NAME}.${CF_DOMAIN}
-
-CFAPPS=$(cf apps)
-
-echo "cf apps results:\n${CFAPPS}"
-echo "ROUTE_NAME: ${ROUTE_NAME}"
-APP_NAME_ACTIVE=$(cf apps | awk -v routename=${ROUTE_NAME} '$0 ~ routename {print $1}')
-echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
-
-if [[ ! -z ${APP_NAME_ACTIVE} ]]; then
-    echo "${APP_NAME_ACTIVE} is the active app with route '${ROUTE_NAME}'"
-    if [ "${APP_NAME_ACTIVE}" == "${APP_NAME_GREEN}" ]; then
-        APP_NAME_TARGET=${APP_NAME_BLUE}
-    else
-        APP_NAME_TARGET=${APP_NAME_GREEN}
-    fi
-else
-    echo "no app is active with the route '${ROUTE_NAME}'"
-    APP_NAME_TARGET=${APP_NAME_GREEN}   # default to green
-fi
-
-echo "target app name: '${APP_NAME_TARGET}'"
-
-echo "cf push application"
-
-cf push ${APP_NAME_TARGET} -f ${ENVIRONMENT}.manifest.yml
-
-echo "cf logout"
-cf logout
-
-}
-
-
 # BG Setup for services
 bg_deploy() {
 MANIFESTFILE=$1
@@ -103,7 +54,7 @@ if [[ "${APP_NAME_ACTIVE}" == "NA" ]]; then
    else
     echo "Renaming the app and timestamping it "
     cf rename ${APP_NAME_ACTIVE} ${TIMESTAPEDAPPNAME}
-    cf unmap-route ${TIMESTAPEDAPPNAME} apps-${CF_DOMAIN} -n ${APP_NAME_ACTIVE}
+    cf unmap-route ${TIMESTAPEDAPPNAME} apps-${CF_DOMAIN} -n ${ROUTE_NAME}
     cf stop ${TIMESTAPEDAPPNAME}
 fi
 
