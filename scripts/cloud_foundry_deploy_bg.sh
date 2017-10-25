@@ -90,7 +90,8 @@ JARPATH=$5
 CF_DOMAIN=$6
 
 eval "ls -la"
-APP_NAME=eval "awk '/name:/ {print $NF}' ${MANIFESTFILE=}"
+cd iom-ui-services
+APP_NAME=eval "awk '/name:/ {print $NF}' perf.manifest.yml"
 echo ${APP_NAME}
 #Define the app types
 APP_NAME_BLUE=${APP_NAME}-BLUE
