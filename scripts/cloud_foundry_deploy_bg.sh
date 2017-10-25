@@ -92,7 +92,7 @@ CF_DOMAIN=$6
 eval "ls -la"
 cd iom-ui-services
 eval "cat perf.manifest.yml"
-APP_NAME=eval "cat "perf.manifest.yml" | awk '/name:/ {print $NF}' "
+eval "APP_NAME=$(awk '/name:/ {print $NF}' "perf.manifest.yml")"
 echo ${APP_NAME}
 #Define the app types
 APP_NAME_BLUE=${APP_NAME}-BLUE
