@@ -2,7 +2,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    reposi
+    repository: docker.artifactory.homedepot.com/flow/java
     tag: latest
 inputs:
   - name: code-repo
