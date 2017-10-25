@@ -93,6 +93,7 @@ eval "ls -la"
 cd iom-ui-services
 eval "cat perf.manifest.yml"
 eval "APP_NAME=$(awk '/name:/ {print $NF}' "perf.manifest.yml")"
+eval "APP_NAME=$(awk '/name:/ {print $NF}' "$MANIFESTFILE")"
 echo ${APP_NAME}
 cd ..
 ###### This section needs to be debugging
