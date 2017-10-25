@@ -89,7 +89,7 @@ APP_NAME_ACTIVE=$4
 JARPATH=$5
 CF_DOMAIN=$6
 
-
+eval "ls -la"
 APP_NAME=eval "awk '/name:/ {print $NF}' ${MANIFESTFILE=}"
 echo ${APP_NAME}
 #Define the app types
