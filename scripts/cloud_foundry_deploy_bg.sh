@@ -180,7 +180,7 @@ deployservices() {
         echo " No Active App"
         APP_NAME_ACTIVE="NA"
     fi
-    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${ROUTE_NAME} ${JARPATH} ${CF_DOMAIN} {APP_NAME_ACTIVE}
+    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${ROUTE_NAME} ${JARPATH} ${CF_DOMAIN} ${APP_NAME_ACTIVE}
     echo "deploy completed for iom-ui-service"
 #
 #    echo "deploy started  for iom-xfer-service"
