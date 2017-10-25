@@ -102,13 +102,8 @@ CF_DOMAIN=$6
 BLUE=${APP_NAME}
 GREEN="${BLUE}-B"
 
-#Decide the route
-if [[ "${ROUTE_NAME}" == "NA" ]]; then
-    echo "host configuration in manifest.yml does not exist, so defaulting to app name: '${APP_NAME}'"
-    ROUTE_NAME=${APP_NAME}
-fi
 #Specify the full route
-ROUTE_NAME=${APP_NAME}.${CF_DOMAIN}
+ROUTE_NAME=${APP_NAME}.apps-${CF_DOMAIN}
 
 
 
