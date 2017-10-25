@@ -89,13 +89,13 @@ APP_NAME_ACTIVE=$4
 JARPATH=$5
 CF_DOMAIN=$6
 ###### This section needs to be debugging
-eval "ls -la"
-cd iom-ui-services
-eval "cat perf.manifest.yml"
-eval "APP_NAME=$(awk '/name:/ {print $NF}' "perf.manifest.yml")"
-eval "APP_NAME=$(awk '/name:/ {print $NF}' "$MANIFESTFILE")"
-echo ${APP_NAME}
-cd ..
+#eval "ls -la"
+#cd iom-ui-services
+#eval "cat perf.manifest.yml"
+#eval "APP_NAME=$(awk '/name:/ {print $NF}' "perf.manifest.yml")"
+#eval "APP_NAME=$(awk '/name:/ {print $NF}' "$MANIFESTFILE")"
+#echo ${APP_NAME}
+#cd ..
 ###### This section needs to be debugging
 #Define the app types
 APP_NAME_BLUE=${APP_NAME}-BLUE
@@ -167,7 +167,7 @@ deployservices() {
     echo "ROUTE_NAME: ${ROUTE_NAME}"
     APP_NAME_ACTIVE=$(cf apps | awk -v routename=${ROUTE_NAME} '$0 ~ routename {print $1}')
     echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
-    if [[ -z ${APP_NAME_ACTIVE} ]]; then
+    if [[ ! -z ${APP_NAME_ACTIVE} ]]; then
         echo " No Active App"
         APP_NAME_ACTIVE="NA"
     fi
