@@ -81,22 +81,12 @@ cf logout
 
 # BG Setup for services
 bg_deploy() {
-
 MANIFESTFILE=$1
 APP_NAME=$2
 ROUTE_NAME=$3
-APP_NAME_ACTIVE=$4
-JARPATH=$5
-CF_DOMAIN=$6
-###### This section needs to be debugging
-#eval "ls -la"
-#cd iom-ui-services
-#eval "cat perf.manifest.yml"
-#eval "APP_NAME=$(awk '/name:/ {print $NF}' "perf.manifest.yml")"
-#eval "APP_NAME=$(awk '/name:/ {print $NF}' "$MANIFESTFILE")"
-#echo ${APP_NAME}
-#cd ..
-###### This section needs to be debugging
+JARPATH=$4
+CF_DOMAIN=$5
+
 #Define the app types
 
 BLUE=${APP_NAME}
@@ -118,8 +108,8 @@ else
 echo "Error Deploying!! requested state: started not found"
 exit 125
 fi
-
-cf map-route $GREEN ${ROUTE_NAME}
+#ROUTE Mapping
+#cf map-route $GREEN ${ROUTE_NAME}
 
 #Stop the app
 cf stop $BLUE -f
@@ -166,22 +156,9 @@ deployservices() {
     MANIFESTFILE="./iom-ui-services/${ENVIRONMENT}.manifest.yml"
     APP_NAME=$(awk '/name:/ {print $NF}' "${MANIFESTFILE=}")
     ROUTE_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
-    if [[ -z ${ROUTE_NAME} ]]; then
-        echo "No Active Route Specified"
-        ROUTE_NAME="NA"
-    fi
-    CFAPPS=$(cf apps)
-    echo "cf apps results:\n${CFAPPS}"
-    echo "ROUTE_NAME: ${ROUTE_NAME}"
-    APP_NAME_ACTIVE=$(cf apps | awk -v routename=${ROUTE_NAME} '$0 ~ routename {print $1}')
-    echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
-    if [[ -z ${APP_NAME_ACTIVE} ]]; then
-        echo " No Active App"
-        APP_NAME_ACTIVE="NA"
-    fi
     JARPATH="../deploy-repo/iom-ui-services.jar"
     CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
-    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${ROUTE_NAME} ${APP_NAME_ACTIVE} ${JARPATH} ${CF_DOMAIN}
+    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${ROUTE_NAME} ${JARPATH} ${CF_DOMAIN}
     echo "deploy completed for iom-ui-service"
 #
 #    echo "deploy started  for iom-xfer-service"
