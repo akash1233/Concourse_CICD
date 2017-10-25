@@ -90,7 +90,7 @@ JARPATH=$5
 CF_DOMAIN=$6
 
 
-APP_NAME="awk '/name:/ {print $NF}' ${MANIFESTFILE=}"
+APP_NAME=eval "awk '/name:/ {print $NF}' ${MANIFESTFILE=}"
 echo ${APP_NAME}
 #Define the app types
 APP_NAME_BLUE=${APP_NAME}-BLUE
