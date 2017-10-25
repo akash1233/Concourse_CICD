@@ -81,6 +81,7 @@ cf logout
 
 # BG Setup for services
 bg_deploy() {
+
 MANIFESTFILE=$1
 APP_NAME=$2
 ROUTE_NAME=$3
@@ -88,15 +89,19 @@ APP_NAME_ACTIVE=$4
 JARPATH=$5
 CF_DOMAIN=$6
 
+#Define the app types
 APP_NAME_BLUE=${APP_NAME}-BLUE
 APP_NAME_GREEN=${APP_NAME}-GREEN
 
-# get the route name
+#Decide the route
 if [[ "${ROUTE_NAME}" == "NA" ]]; then
     echo "host configuration in manifest.yml does not exist, so defaulting to app name: '${APP_NAME}'"
     ROUTE_NAME=${APP_NAME}
 fi
+#Specify the full route
 ROUTE_NAME=${APP_NAME}.${CF_DOMAIN}
+
+# Define the app target
 if [[ "${APP_NAME_ACTIVE}" == "NA" ]]; then
     echo "${APP_NAME_ACTIVE} is the active app with route '${ROUTE_NAME}'"
     if [ "${APP_NAME_ACTIVE}" == "${APP_NAME_GREEN}" ]; then
@@ -108,11 +113,9 @@ else
     echo "no app is active with the route '${ROUTE_NAME}'"
     APP_NAME_TARGET=${APP_NAME_GREEN}   # default to green
 fi
-
 echo "target app name: '${APP_NAME_TARGET}'"
-
 echo "cf push application"
-cf push ${APP_NAME_TARGET} -f $MANIFESTFILE -p ${PATH}
+cf push ${APP_NAME_TARGET} -f ${MANIFESTFILE} -p ${JARPATH}
 }
 
 
@@ -162,7 +165,7 @@ deployservices() {
     fi
     JARPATH="../deploy-repo/iom-ui-services.jar"
     CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
-    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${ROUTE_NAME} ${APP_NAME_ACTIVE} ${JARPATH}
+    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${ROUTE_NAME} ${APP_NAME_ACTIVE} ${JARPATH} ${CF_DOMAIN}
     echo "deploy completed for iom-ui-service"
 
     echo "deploy started  for iom-xfer-service"
