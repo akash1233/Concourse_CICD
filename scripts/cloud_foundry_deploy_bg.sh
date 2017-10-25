@@ -109,16 +109,20 @@ fi
 #ROUTE Mapping
 #cf map-route $GREEN ${ROUTE_NAME}
 
-#Stop the app
-#cf stop $BLUE
-# add the GREEN application to each BLUE route to be load-balanced
-# TODO this output parsing seems a bit fragile...find a way to use more structured output
-cf routes | tail -n +4 | grep $BLUE | awk '{print $3" -n "$2}' | xargs -n 3 cf map-route $GREEN
+##Stop the app
+##cf stop $BLUE
+## add the GREEN application to each BLUE route to be load-balanced
+## TODO this output parsing seems a bit fragile...find a way to use more structured output
+#cf routes | tail -n +4 | grep $BLUE | awk '{print $3" -n "$2}' | xargs -n 3 cf map-route $GREEN
 
 # cleanup
 # TODO consider 'stop'-ing the BLUE instead of deleting it, so that depedencies are cached for next time
+timestamp=$(date +%s)
+cf rename $BLUE $BLUE${timestamp}
 cf rename $GREEN $BLUE
+cf rename$BLUE${timestamp} $BLUE
 cf delete-route $CF_DOMAIN -n $GREEN -f
+cf stop $BLUE
 
 finally
 echo "Blue Green Deploy Completed"
