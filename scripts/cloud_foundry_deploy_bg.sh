@@ -164,10 +164,7 @@ deployservices() {
     cd ../code-repo
     echo "deploy started  for iom-ui-service"
 
-    APP_NAME=$(awk '/name:/ {print $NF}' "./iom-ui-services/${ENVIRONMENT}.manifest.yml") # grab the app name from the manifest.yml file
-    echo ${APP_NAME}
-
-    bg_deploy "./iom-ui-services/${ENVIRONMENT}.manifest.yml" "../deploy-repo/iom-ui-services.jar"
+    bash bg_deploy "./iom-ui-services/${ENVIRONMENT}.manifest.yml" "../deploy-repo/iom-ui-services.jar"
     echo "deploy completed for iom-ui-service"
 
     echo "deploy started  for iom-xfer-service"
