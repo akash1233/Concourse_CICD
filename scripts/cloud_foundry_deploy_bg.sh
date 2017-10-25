@@ -167,7 +167,7 @@ deployservices() {
     echo "ROUTE_NAME: ${ROUTE_NAME}"
     APP_NAME_ACTIVE=$(cf apps | awk -v routename=${ROUTE_NAME} '$0 ~ routename {print $1}')
     echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
-    if [[ ! -z ${APP_NAME_ACTIVE} ]]; then
+    if [[ -z ${APP_NAME_ACTIVE} ]]; then
         echo " No Active App"
         APP_NAME_ACTIVE="NA"
     fi
