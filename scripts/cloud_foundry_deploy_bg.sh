@@ -85,7 +85,7 @@ MANIFESTFILE=$1
 PATH=$2
 eval "cat ${MANIFESTFILE}"
 #eval "APP_NAME=$(awk '/name:/ {print $NF}' "perf.manifest.yml")"
-eval "APP_NAME=$(awk '/name:/ {print $NF}' "${MANIFESTFILE}")" # grab the app name from the manifest.yml file
+eval "APP_NAME=$(awk '/name:/ {print $NF}' "$MANIFESTFILE")" # grab the app name from the manifest.yml file
 APP_NAME_BLUE=${APP_NAME}-BLUE
 APP_NAME_GREEN=${APP_NAME}-GREEN
 eval "CF_DOMAIN=$(echo $CF_API | cut -d '-' -f 2)"
