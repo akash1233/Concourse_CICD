@@ -44,11 +44,8 @@ BLUE=${APP_NAME}
 GREEN="${BLUE}-B"
 TIMESTAPEDAPPNAME=${APP_NAME}$(date +%s)
 
-#Specify the full route
-ROUTE_NAME=${ROUTE_NAME}.apps-${CF_DOMAIN}
 
-
-#Rename the active app with a timestamp and stop it unmap the route
+#Rename the active app with a timestamp , stop it and unmap the route
 if [[ "${APP_NAME_ACTIVE}" == "NA" ]]; then
     echo "No active app so going ahead with deployments"
    else
@@ -57,6 +54,9 @@ if [[ "${APP_NAME_ACTIVE}" == "NA" ]]; then
     cf unmap-route ${TIMESTAPEDAPPNAME} apps-${CF_DOMAIN} -n ${ROUTE_NAME}
     cf stop ${TIMESTAPEDAPPNAME}
 fi
+
+#Specify the full route name
+ROUTE_NAME=${ROUTE_NAME}.apps-${CF_DOMAIN}
 
 
 # create the GREEN application
