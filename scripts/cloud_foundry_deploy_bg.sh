@@ -81,38 +81,35 @@ cf logout
 
 # BG Setup for services
 bg_deploy() {
+
 MANIFESTFILE=$1
-PATH=$2
+APP_NAME=$2
+ROUTE_NAME=$3
+APP_NAME_ACTIVE=$4
+JARPATH=$5
+CF_DOMAIN=$6
+###### This section needs to be debugging
 eval "ls -la"
 cd iom-ui-services
 eval "cat perf.manifest.yml"
+eval "APP_NAME=$(awk '/name:/ {print $NF}' "perf.manifest.yml")"
+echo ${APP_NAME}
 cd ..
-eval "cat $MANIFESTFILE"
-#eval "APP_NAME=$(awk '/name:/ {print $NF}' "perf.manifest.yml")"
-eval "APP_NAME=$(awk '/name:/ {print $NF}' "$MANIFESTFILE")" # grab the app name from the manifest.yml file
+###### This section needs to be debugging
+#Define the app types
 APP_NAME_BLUE=${APP_NAME}-BLUE
 APP_NAME_GREEN=${APP_NAME}-GREEN
-eval "CF_DOMAIN=$(echo $CF_API | cut -d '-' -f 2)"
 
-# get the app name from manifest file
-eval "ROUTE_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE}")"  # grab the route name from the manifest.yml file
-
-# get the route name
-if [[ -z ${ROUTE_NAME} ]]; then
+#Decide the route
+if [[ "${ROUTE_NAME}" == "NA" ]]; then
     echo "host configuration in manifest.yml does not exist, so defaulting to app name: '${APP_NAME}'"
     ROUTE_NAME=${APP_NAME}
 fi
-
+#Specify the full route
 ROUTE_NAME=${APP_NAME}.${CF_DOMAIN}
 
-CFAPPS=$(cf apps)
-
-echo "cf apps results:\n${CFAPPS}"
-echo "ROUTE_NAME: ${ROUTE_NAME}"
-eval "APP_NAME_ACTIVE=$(cf apps | awk -v routename="${ROUTE_NAME}" '$0 ~ routename {print $1}')"
-echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
-
-if [[ ! -z ${APP_NAME_ACTIVE} ]]; then
+# Define the app target
+if [[ "${APP_NAME_ACTIVE}" == "NA" ]]; then
     echo "${APP_NAME_ACTIVE} is the active app with route '${ROUTE_NAME}'"
     if [ "${APP_NAME_ACTIVE}" == "${APP_NAME_GREEN}" ]; then
         APP_NAME_TARGET=${APP_NAME_BLUE}
@@ -123,12 +120,9 @@ else
     echo "no app is active with the route '${ROUTE_NAME}'"
     APP_NAME_TARGET=${APP_NAME_GREEN}   # default to green
 fi
-
 echo "target app name: '${APP_NAME_TARGET}'"
-
 echo "cf push application"
-
-cf push ${APP_NAME_TARGET} -f $MANIFESTFILE -p ${PATH}
+cf push ${APP_NAME_TARGET} -f ${MANIFESTFILE} -p ${JARPATH}
 }
 
 
@@ -160,7 +154,25 @@ deployui() {
 deployservices() {
     cd ../code-repo
     echo "deploy started  for iom-ui-service"
-    bg_deploy "./iom-ui-services/${ENVIRONMENT}.manifest.yml" "../deploy-repo/iom-ui-services.jar"
+    MANIFESTFILE="./iom-ui-services/${ENVIRONMENT}.manifest.yml"
+    APP_NAME=$(awk '/name:/ {print $NF}' "${MANIFESTFILE=}")
+    ROUTE_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
+    if [[ -z ${ROUTE_NAME} ]]; then
+        echo "No Active Route Specified"
+        ROUTE_NAME="NA"
+    fi
+    CFAPPS=$(cf apps)
+    echo "cf apps results:\n${CFAPPS}"
+    echo "ROUTE_NAME: ${ROUTE_NAME}"
+    APP_NAME_ACTIVE=$(cf apps | awk -v routename=${ROUTE_NAME} '$0 ~ routename {print $1}')
+    echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
+    if [[ -z ${APP_NAME_ACTIVE} ]]; then
+        echo " No Active App"
+        APP_NAME_ACTIVE="NA"
+    fi
+    JARPATH="../deploy-repo/iom-ui-services.jar"
+    CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
+    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${ROUTE_NAME} ${APP_NAME_ACTIVE} ${JARPATH} ${CF_DOMAIN}
     echo "deploy completed for iom-ui-service"
 
     echo "deploy started  for iom-xfer-service"
