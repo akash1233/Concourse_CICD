@@ -184,7 +184,7 @@ deployservices() {
         echo " No Active App"
         APP_NAME_ACTIVE="NA"
     fi
-    JARPATH="../deploy-repo/iom-xfer-services.jar"
+    JARPATH="../deploy-repo/iom-ui-services.jar"
     CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
     bg_deploy ${MANIFESTFILE} ${APP_NAME} ${ROUTE_NAME} ${APP_NAME_ACTIVE} ${JARPATH} ${CF_DOMAIN}
     echo "deploy completed for iom-ui-service"
