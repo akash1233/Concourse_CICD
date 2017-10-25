@@ -81,38 +81,22 @@ cf logout
 
 # BG Setup for services
 bg_deploy() {
-PATH=$2
 MANIFESTFILE=$1
-
-pwd
-
-ls -lrt
-
-APP_NAME=`awk '/name:/ {print $NF}' "${MANIFESTFILE}"` # grab the app name from the manifest.yml file
+APP_NAME=$2
+ROUTE_NAME=$3
+APP_NAME_ACTIVE=$4
+JARPATH=$5
+CF_DOMAIN=$6
 
 APP_NAME_BLUE=${APP_NAME}-BLUE
-
 APP_NAME_GREEN=${APP_NAME}-GREEN
-CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
-
-# get the app name from manifest file
-ROUTE_NAME=$(awk '/host:/ {print $NF}' ${MANIFESTFILE})  # grab the route name from the manifest.yml file
 
 # get the route name
 if [[ -z ${ROUTE_NAME} ]]; then
     echo "host configuration in manifest.yml does not exist, so defaulting to app name: '${APP_NAME}'"
     ROUTE_NAME=${APP_NAME}
 fi
-
 ROUTE_NAME=${APP_NAME}.${CF_DOMAIN}
-
-CFAPPS=$(cf apps)
-
-echo "cf apps results:\n${CFAPPS}"
-echo "ROUTE_NAME: ${ROUTE_NAME}"
-APP_NAME_ACTIVE=$(cf apps | awk -v routename=${ROUTE_NAME} '$0 ~ routename {print $1}')
-echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
-
 if [[ ! -z ${APP_NAME_ACTIVE} ]]; then
     echo "${APP_NAME_ACTIVE} is the active app with route '${ROUTE_NAME}'"
     if [ "${APP_NAME_ACTIVE}" == "${APP_NAME_GREEN}" ]; then
@@ -128,10 +112,7 @@ fi
 echo "target app name: '${APP_NAME_TARGET}'"
 
 echo "cf push application"
-
 cf push ${APP_NAME_TARGET} -f $MANIFESTFILE -p ${PATH}
-echo "cf logout"
-cf logout
 }
 
 
@@ -163,8 +144,17 @@ deployui() {
 deployservices() {
     cd ../code-repo
     echo "deploy started  for iom-ui-service"
-
-    bash bg_deploy "./iom-ui-services/${ENVIRONMENT}.manifest.yml" "../deploy-repo/iom-ui-services.jar"
+    MANIFESTFILE="./iom-ui-services/${ENVIRONMENT}.manifest.yml"
+    APP_NAME=$(awk '/name:/ {print $NF}' "${MANIFESTFILE=}")
+    ROUTE_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
+    CFAPPS=$(cf apps)
+    echo "cf apps results:\n${CFAPPS}"
+    echo "ROUTE_NAME: ${ROUTE_NAME}"
+    APP_NAME_ACTIVE=$(cf apps | awk -v routename=${ROUTE_NAME} '$0 ~ routename {print $1}')
+    echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
+    JARPATH="../deploy-repo/iom-ui-services.jar"
+    CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
+    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${ROUTE_NAME} ${APP_NAME_ACTIVE} ${JARPATH}
     echo "deploy completed for iom-ui-service"
 
     echo "deploy started  for iom-xfer-service"
