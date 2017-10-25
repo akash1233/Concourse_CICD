@@ -110,7 +110,7 @@ fi
 ROUTE_NAME=${APP_NAME}.${CF_DOMAIN}
 
 # Define the app target
-if [[ "${APP_NAME_ACTIVE}" == "NA" ]]; then
+if [[ ! "${APP_NAME_ACTIVE}" == "NA" ]]; then
     echo "${APP_NAME_ACTIVE} is the active app with route '${ROUTE_NAME}'"
     if [ "${APP_NAME_ACTIVE}" == "${APP_NAME_GREEN}" ]; then
         APP_NAME_TARGET=${APP_NAME_BLUE}
