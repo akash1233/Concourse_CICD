@@ -99,7 +99,7 @@ CF_DOMAIN=$6
 ###### This section needs to be debugging
 #Define the app types
 
-BLUE=${APPNAME}
+BLUE=${APP_NAME}
 GREEN="${BLUE}-B"
 
 #Decide the route
@@ -110,8 +110,7 @@ fi
 #Specify the full route
 ROUTE_NAME=${APP_NAME}.${CF_DOMAIN}
 
-#Stop the app
-cf stop $BLUE -f
+
 
 # create the GREEN application
 cf push $GREEN -f ${MANIFESTFILE} -p ${JARPATH} | tee pushoutput.txt
@@ -126,6 +125,9 @@ exit 125
 fi
 
 cf map-route $GREEN ${ROUTE_NAME}
+
+#Stop the app
+cf stop $BLUE -f
 
 # cleanup
 # TODO consider 'stop'-ing the BLUE instead of deleting it, so that depedencies are cached for next time
