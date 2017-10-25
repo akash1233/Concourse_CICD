@@ -117,12 +117,13 @@ fi
 
 # cleanup
 # TODO consider 'stop'-ing the BLUE instead of deleting it, so that depedencies are cached for next time
-timestamp=$(date +%s)
-cf rename $BLUE $BLUE${timestamp}
+#BLUETIMESTAMP=${BLUE}$(date +%s)
+#cf rename $BLUE ${BLUETIMESTAMP}
+#cf rename $GREEN ${BLUETIMESTAMP}
+#cf rename$BLUE${timestamp} $BLUE
+cf delete $BLUE -f
 cf rename $GREEN $BLUE
-cf rename$BLUE${timestamp} $BLUE
 cf delete-route $CF_DOMAIN -n $GREEN -f
-cf stop $BLUE
 
 finally
 echo "Blue Green Deploy Completed"
