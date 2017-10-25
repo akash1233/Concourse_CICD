@@ -59,8 +59,14 @@ fi
 ROUTE_NAME=${HOSTNAME}.apps-${CF_DOMAIN}
 
 
-# create the GREEN application
-cf push $GREEN -f ${MANIFESTFILE} -p ${JARPATH} | tee pushoutput.txt
+# create the GREEN application for ui and services application
+if [[ "${JARPATH}" == "NA" ]]; then
+   cf push $GREEN -f ${MANIFESTFILE} | tee pushoutput.txt
+   else
+   cf push $GREEN -f ${MANIFESTFILE} -p ${JARPATH} | tee pushoutput.txt
+fi
+
+
 
 
 # ensure it starts by grepping the text 'requested state: started'
@@ -71,22 +77,10 @@ echo "Error Deploying!! requested state: started not found"
 exit 125
 fi
 
-#cf map-route $GREEN ${ROUTE_NAME}
 
-##Stop the app
-##cf stop $BLUE
-## add the GREEN application to each BLUE route to be load-balanced
-## TODO this output parsing seems a bit fragile...find a way to use more structured output
-#cf routes | tail -n +4 | grep $BLUE | awk '{print $3" -n "$2}' | xargs -n 3 cf map-route $GREEN
-
-# cleanup
-# TODO consider 'stop'-ing the BLUE instead of deleting it, so that depedencies are cached for next time
-#BLUETIMESTAMP=${BLUE}$(date +%s)
-#cf rename $BLUE ${BLUETIMESTAMP}
-#cf rename $GREEN ${BLUETIMESTAMP}
-#cf rename$BLUE${timestamp} $BLUE
+# App renaming
 cf rename $GREEN $BLUE
-echo "Blue Green Deploy Completed"
+echo "Blue Green Deploy's for ${APP_NAME} Completed"
 }
 
 
@@ -98,9 +92,28 @@ deployui() {
     mkdir -p dist  && chmod 777 dist
     cp ../../deploy-repo/iom-ui/* ./dist/ -rf
     ls -lrt ./dist/
-    ls -ltr
-    cf push -f ${ENVIRONMENT}.manifest.yml
+    MANIFESTFILE="${ENVIRONMENT}.manifest.yml"
+    APP_NAME=$(awk '/name:/ {print $NF}' "${MANIFESTFILE=}")
+    HOST_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
+    JARPATH=NA
+    CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
+    CFAPPS=$(cf apps)
+    echo "cf apps results:\n${CFAPPS}"
+    echo "ROUTE_NAME: ${ROUTE_NAME}"
+    APP_NAME_ACTIVE=$(cf apps | awk -v routename=${HOST_NAME} '$0 ~ routename {print $1}')
+    echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
+    if [[ -z ${APP_NAME_ACTIVE} ]]; then
+        echo " No Active App"
+        APP_NAME_ACTIVE="NA"
+    fi
+    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${HOST_NAME} ${JARPATH} ${CF_DOMAIN} ${APP_NAME_ACTIVE}
     echo "deploy completed  for iom ui"
+
+
+    echo "----------------------------------------------------------------------------------------------------------------"
+    echo "----------------------------------------------------------------------------------------------------------------"
+
+
     # Deployment for approval ui
     echo "deploy started  for iom approval ui"
     cd ../iom-approval-ui
@@ -108,9 +121,26 @@ deployui() {
     mkdir -p dist  && chmod 777 dist
     cp ../../deploy-repo/iom-approval-ui/* ./dist/ -rf
     ls -lrt ./dist/
-    cf push -f ${ENVIRONMENT}.manifest.yml
+    MANIFESTFILE="${ENVIRONMENT}.manifest.yml"
+    APP_NAME=$(awk '/name:/ {print $NF}' "${MANIFESTFILE=}")
+    HOST_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
+    JARPATH=NA
+    CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
+    CFAPPS=$(cf apps)
+    echo "cf apps results:\n${CFAPPS}"
+    echo "ROUTE_NAME: ${ROUTE_NAME}"
+    APP_NAME_ACTIVE=$(cf apps | awk -v routename=${HOST_NAME} '$0 ~ routename {print $1}')
+    echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
+    if [[ -z ${APP_NAME_ACTIVE} ]]; then
+        echo " No Active App"
+        APP_NAME_ACTIVE="NA"
+    fi
+    bg_deploy ${MANIFESTFILE} ${APP_NAME} ${HOST_NAME} ${JARPATH} ${CF_DOMAIN} ${APP_NAME_ACTIVE}
     echo "deploy completed  for iom approval ui"
     echo "deployment of for the service will be done and the ui will be excluded"
+
+    echo "----------------------------------------------------------------------------------------------------------------"
+    echo "----------------------------------------------------------------------------------------------------------------"
 }
 
 
@@ -250,4 +280,3 @@ else
 fi
 
 echo "********************************************************* ${ENVIRONMENT} deployments done"
-
