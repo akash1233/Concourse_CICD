@@ -42,7 +42,7 @@ APP_NAME_ACTIVE=$6
 #Define the app types
 BLUE=${APP_NAME}
 GREEN="${BLUE}-B"
-TIMESTAPEDAPPNAME=${APP_NAME}$(date +%s)
+TIMESTAPEDAPPNAME=${APP_NAME}_$(date +%Y-%m-%d-%H-%M)
 
 
 #Rename the active app with a timestamp , stop it and unmap the route

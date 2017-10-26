@@ -1569,7 +1569,6 @@ jobs:
           token: ((qualityhub-token-dct))
       - put: slack
         params:
-          #TODO replace below channel name with your channel
           channel: ((slack-channel))
           username: ((slack-username))
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
@@ -1606,7 +1605,6 @@ jobs:
           token: ((qualityhub-token-dct))
       - put: slack
         params:
-          #TODO replace below channel name with your channel
           channel: ((slack-channel))
           username: ((slack-username))
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
@@ -1648,7 +1646,7 @@ jobs:
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed communicating with SQ Hub! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: deploy
-    file: ci-iom/concourse/cloud_foundry_deploy_llc.yml
+    file: ci-iom/concourse/cloud_foundry_deploy_bg.yml
     input_mapping: {code-repo: code-repo-dct-qa , deploy-repo: dist , ci: ci-iom}
     params:
       GITHUB_PRIVATE_KEY: ((github-private-key))
@@ -1802,7 +1800,7 @@ jobs:
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: deploy
-    file: ci-iom/concourse/cloud_foundry_deploy_llc.yml
+    file: ci-iom/concourse/cloud_foundry_deploy_bg.yml
     input_mapping: { code-repo: code-repo-dct-qa , deploy-repo: dist , ci: ci-iom }
     params:
       GITHUB_PRIVATE_KEY: ((github-private-key))
