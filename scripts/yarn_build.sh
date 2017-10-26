@@ -8,8 +8,8 @@ npm install -g yarn
 buildcopy(){
     cd ./$1
     cp -r ../../repo-cache/node_modules node_modules
-    npm rebuild
-    npm install
+    npm rebuild --silent
+    npm install --silent
     yarn run build:${BUILD_TARGET}
     chmod 777 $DIST_DIRECTORY
     mkdir -p ../../dist/$1/ && chmod 777 ../../dist/$1/
