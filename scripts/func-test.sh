@@ -4,7 +4,7 @@ export https_proxy=http://thd-svr-proxy-qa.homedepot.com:7070
 ls -las
 cd ./iom-ui/
 cp -r ../../repo-cache/node_modules node_modules
-npm install -g yarn
+npm install -g yarn --silent
 npm rebuild --silent
 npm install --silent
 yarn run e2e --silent

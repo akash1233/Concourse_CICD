@@ -10,7 +10,7 @@ buildcopy(){
     cp -r ../../repo-cache/node_modules node_modules
     npm rebuild --silent
     npm install --silent
-    yarn run build:${BUILD_TARGET}
+    yarn run build:${BUILD_TARGET} --silent
     chmod 777 $DIST_DIRECTORY
     mkdir -p ../../dist/$1/ && chmod 777 ../../dist/$1/
     cp -r ./$DIST_DIRECTORY/* ../../dist/$1/
