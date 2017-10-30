@@ -259,7 +259,7 @@ jobs:
           #TODO update this value to production | DONE
           BUILD_TARGET: production
           #TODO update the secrets file for correct values | DONE
-          CF_API_ZONE_URL: ((cf-api-prod-zonea))
+          CF_API: ((cf-api-prod-zonea))
           #TODO update the secrets file for correct values | DONE
           CF_ORG: ((cf-org-prod))
           CF_SPACE: ((cf-space-prodza))
@@ -313,7 +313,7 @@ jobs:
           #TODO update this value to production | DONE
           BUILD_TARGET: production
           #TODO update the secrets file for correct values | DONE
-          CF_API_ZONE_URL: ((cf-api-prod-zonea))
+          CF_API: ((cf-api-prod-zonea))
           #TODO update the secrets file for correct values | DONE
           CF_ORG: ((cf-org-prod))
           CF_SPACE: ((cf-space-prodza))
@@ -394,7 +394,7 @@ jobs:
           #TODO update this value to production  DONE
           BUILD_TARGET: production
           #TODO update the secrets file for correct values DONE
-          CF_API_ZONE_URL: ((cf-api-prod-zoneb))
+          CF_API: ((cf-api-prod-zoneb))
           #TODO update the secrets file for correct values | DONE
           CF_ORG: ((cf-org-prod))
           CF_SPACE: ((cf-space-prodzb))
@@ -448,7 +448,7 @@ jobs:
           #TODO update this value to production  DONE
           BUILD_TARGET: production
           #TODO update the secrets file for correct values DONE
-          CF_API_ZONE_URL: ((cf-api-prod-zoneb))
+          CF_API: ((cf-api-prod-zoneb))
           #TODO update the secrets file for correct values | DONE
           CF_ORG: ((cf-org-prod))
           CF_SPACE: ((cf-space-prodzb))
