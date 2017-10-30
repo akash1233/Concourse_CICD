@@ -8,6 +8,14 @@ resources:
     private_key: ((github-private-key))
   check_every: 10m
 
+
+- name: repo-cache-dct-npm
+  type: npm-cache
+  source:
+    <<: *code-repo-cache-dct
+    project-path: iom-ui
+    registry: https://npm.artifactory.homedepot.com/artifactory/api/npm/npm/
+
 - name: repo-cache-dct
   type: gradle-cache
   check_every: 1m
@@ -53,6 +61,12 @@ resource_types:
       repository: docker.artifactory.homedepot.com/concourse/gradle-cache-resource
       tag: latest
       registry_mirror: https://docker.artifactory.homedepot.com
+
+  - name: npm-cache
+    type: docker-image
+    source:
+      repository: ymedlop/npm-cache-resource
+      tag: latest
 
 
 
@@ -206,7 +220,7 @@ jobs:
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed invoking locksmith! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
 
-- name: Deploy-ZoneA
+- name: Deploy-ZoneA-Services
   max_in_flight: 1
   plan:
   - get: code-repo-dct
@@ -233,7 +247,7 @@ jobs:
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: Deploy
-    file: ci-iom/concourse/cloud_foundry_deploy_prod.yml
+    file: ci-iom/concourse/cloud_foundry_deploy_bg.yml
     input_mapping: {code-repo: code-repo-dct, deploy-repo: dist , ci: ci-iom}
     params:
           GITHUB_PRIVATE_KEY: ((github-private-key))
@@ -249,6 +263,61 @@ jobs:
           #TODO update the secrets file for correct values | DONE
           CF_ORG: ((cf-org-prod))
           CF_SPACE: ((cf-space-prodza))
+          DEPLOY_TYPE: SERVICES
+    on_failure:
+      aggregate:
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: concourse
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed deploying to PCF! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+
+- name: Deploy-ZoneA-UI
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct
+    trigger: true
+    passed: [Locksmith-ZONEA]
+  - get: repo-cache-dct-npm
+  - get: ci
+  - get: ci-iom
+  - task: build
+    file: ci-iom/concourse/yarn_build.yml
+    input_mapping: {code-repo: code-repo-dct, repo-cache: repo-cache-dct-npm , ci: ci-iom}
+    params:
+      GRADLE_USER_HOME: ../repo-cache/.gradle
+      DIST_DIRECTORY: build/libs
+      GITHUB_PRIVATE_KEY: {{github-private-key}}
+      GITHUB_TOKEN: {{github-token}}
+      SLACK_WEBHOOK_URL: {{slack-webhook-url}}
+      BUILD_TARGET: production
+    on_failure:
+      aggregate:
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: concourse
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: Deploy
+    file: ci-iom/concourse/cloud_foundry_deploy_bg.yml
+    input_mapping: {code-repo: code-repo-dct, deploy-repo: dist , ci: ci-iom}
+    params:
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          ENVIRONMENT: prodza
+          DEPLOYMENT_USER: ((prod-pipeline-cfuser))
+          DEPLOYMENT_PWD: ((prod-pipeline-password))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          #TODO update this value to production | DONE
+          BUILD_TARGET: production
+          #TODO update the secrets file for correct values | DONE
+          CF_API_ZONE_URL: ((cf-api-prod-zonea))
+          #TODO update the secrets file for correct values | DONE
+          CF_ORG: ((cf-org-prod))
+          CF_SPACE: ((cf-space-prodza))
+          DEPLOY_TYPE: UI
     on_failure:
       aggregate:
       - put: slack
@@ -263,7 +332,7 @@ jobs:
   plan:
   - get: code-repo-dct
     trigger: true
-    passed: [Deploy-ZoneA]
+    passed: [Deploy-ZoneA-UI , Deploy-ZoneA-Services]
   - get: ci
   - get: ci-iom
   - task: Locksmith
@@ -286,7 +355,7 @@ jobs:
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed invoking locksmith! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
 
-- name: Deploy-ZoneB
+- name: Deploy-ZoneB-Services
   max_in_flight: 1
   plan:
   - get: code-repo-dct
@@ -313,7 +382,7 @@ jobs:
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
   - task: Deploy
-    file: ci-iom/concourse/cloud_foundry_deploy_prod.yml
+    file: ci-iom/concourse/cloud_foundry_deploy_bg.yml
     input_mapping: {code-repo: code-repo-dct, deploy-repo: dist , ci: ci-iom}
     params:
           GITHUB_PRIVATE_KEY: ((github-private-key))
@@ -329,6 +398,7 @@ jobs:
           #TODO update the secrets file for correct values | DONE
           CF_ORG: ((cf-org-prod))
           CF_SPACE: ((cf-space-prodzb))
+          DEPLOY_TYPE: SERVICES
     on_failure:
       aggregate:
       - put: slack
@@ -337,6 +407,62 @@ jobs:
           username: concourse
           icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
           text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed deploying to PCF! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+
+- name: Deploy-ZoneB-UI
+  max_in_flight: 1
+  plan:
+  - get: code-repo-dct
+    trigger: true
+    passed: [Locksmith-ZONEB]
+  - get: ci
+  - get: ci-iom
+  - get: repo-cache-dct-npm
+  - task: build
+    file: ci-iom/concourse/yarn_build.yml
+    input_mapping: {code-repo: code-repo-dct, repo-cache: repo-cache-dct-npm , ci: ci-iom}
+    params:
+      GRADLE_USER_HOME: ../repo-cache/.gradle
+      DIST_DIRECTORY: dist
+      GITHUB_PRIVATE_KEY: ((github-private-key))
+      GITHUB_TOKEN: ((github-token))
+      SLACK_WEBHOOK_URL: ((slack-webhook-url))
+      BUILD_TARGET: production
+    on_failure:
+      aggregate:
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: concourse
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed building! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+  - task: Deploy
+    file: ci-iom/concourse/cloud_foundry_deploy_bg.yml
+    input_mapping: {code-repo: code-repo-dct, deploy-repo: dist , ci: ci-iom}
+    params:
+          GITHUB_PRIVATE_KEY: ((github-private-key))
+          GITHUB_TOKEN: ((github-token))
+          ENVIRONMENT: prodzb
+          DEPLOYMENT_USER: ((prod-pipeline-cfuser))
+          DEPLOYMENT_PWD: ((prod-pipeline-password))
+          SLACK_WEBHOOK_URL: ((slack-webhook-url))
+          #TODO update this value to production  DONE
+          BUILD_TARGET: production
+          #TODO update the secrets file for correct values DONE
+          CF_API_ZONE_URL: ((cf-api-prod-zoneb))
+          #TODO update the secrets file for correct values | DONE
+          CF_ORG: ((cf-org-prod))
+          CF_SPACE: ((cf-space-prodzb))
+          DEPLOY_TYPE: UI
+    on_failure:
+      aggregate:
+      - put: slack
+        params:
+          channel: ((slack-channel))
+          username: concourse
+          icon_url: https://avatars1.githubusercontent.com/u/7809479?v=3&s=200
+          text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed deploying to PCF! <$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME|  Click for details.>"
+
+
 
 #- name: Close CR
 #  max_in_flight: 1
