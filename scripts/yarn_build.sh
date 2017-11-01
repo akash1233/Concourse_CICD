@@ -18,6 +18,8 @@ buildcopy(){
 }
 
 buildcopy iom-ui
+
 cd ..
+
 buildcopy iom-approval-ui
 
