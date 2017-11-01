@@ -33,9 +33,9 @@ delete_oldapps() {
      BLUEAPP=$1
      APPNAME=$2
      REGEX="\\"${APPNAME}"_([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))"
-     array=($(cf apps | grep -iE ${REGEX} | cut -d ' ' -f1))
+     apparray=($(cf apps | grep -iE ${REGEX} | cut -d ' ' -f1))
      echo " app array content " ${apparray[@]}
-     for i in "${array[@]}";
+     for i in "${apparray[@]}";
      do
          if [[ $i ==  ${BLUEAPP} ]]; then
               echo "not deleting the blue app "${i}""
