@@ -33,7 +33,8 @@ delete_oldapps() {
      BLUEAPP=$1
      APPNAME=$2
      REGEX="\\"${APPNAME}"_([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))"
-     apparray=$(cf apps | grep -iE ${REGEX} | cut -d ' ' -f1)
+#     apparray=$(cf apps | grep -iE ${REGEX} | cut -d ' ' -f1)
+     apparray=$(cf apps | awk -v appname=${APPNAME}_ '$0 ~ appname {print $1}')
      echo " app array content " "${apparray[@]}"
      for i in "${apparray[@]}";
      do
@@ -178,8 +179,7 @@ deployservices() {
     JARPATH="../deploy-repo/iom-ui-services.jar"
     CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
     CFAPPS=$(cf apps)
-    REGEX="\\"${APP_NAME}"_([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))"
-    apparray=$(cf apps | grep -iE ${REGEX})
+    apparray=$(cf apps | awk -v appname=${APP_NAME}_ '$0 ~ appname {print $1}')
     echo " app array content " "${apparray[@]}"
     echo "cf apps results:\n${CFAPPS}"
     echo "ROUTE_NAME: ${ROUTE_NAME}"
