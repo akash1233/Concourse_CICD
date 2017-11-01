@@ -179,7 +179,7 @@ deployservices() {
     CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
     CFAPPS=$(cf apps)
     REGEX="\\"${APP_NAME}"_([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))"
-    apparray=$(cf apps | grep -iE ${REGEX} | cut -d ' ' -f1)
+    apparray=$(cf apps | grep -iE ${REGEX})
     echo " app array content " "${apparray[@]}"
     echo "cf apps results:\n${CFAPPS}"
     echo "ROUTE_NAME: ${ROUTE_NAME}"
