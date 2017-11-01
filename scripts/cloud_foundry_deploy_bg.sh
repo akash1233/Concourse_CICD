@@ -32,17 +32,15 @@ logintoconcourse() {
 delete_oldapps() {
      BLUEAPP=$1
      APPNAME=$2
-     REGEX="\\"${APPNAME}"_([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))"
-#     apparray=$(cf apps | grep -iE ${REGEX} | cut -d ' ' -f1)
      apparray=$(cf apps | awk -v appname=${APPNAME}_ '$0 ~ appname {print $1}')
-     echo " app array content " "${apparray[@]}"
-     for i in "${apparray[@]}";
+     echo "size of array "${#apparray[*]}" "
+     for i in "${apparray[*]}";
      do
-         if [[ $i ==  ${BLUEAPP} ]]; then
+         if [[ "$i" ==  "${BLUEAPP}" ]]; then
               echo "not deleting the blue app "${i}""
               else
               echo "deleting the old apps older the 1 deployment "${i}" "
-              cf delete -f $i
+              cf delete -f "$i"
          fi
      done
 }
@@ -121,8 +119,6 @@ deployui() {
     HOST_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
     JARPATH=NA
     CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
-    CFAPPS=$(cf apps)
-    echo "cf apps results:\n${CFAPPS}"
     echo "ROUTE_NAME: ${ROUTE_NAME}"
     APP_NAME_ACTIVE=$(cf apps | awk -v routename=${HOST_NAME} '$0 ~ routename {print $1}')
     echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
@@ -150,8 +146,6 @@ deployui() {
     HOST_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
     JARPATH=NA
     CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
-    CFAPPS=$(cf apps)
-    echo "cf apps results:\n${CFAPPS}"
     echo "ROUTE_NAME: ${ROUTE_NAME}"
     APP_NAME_ACTIVE=$(cf apps | awk -v routename=${HOST_NAME} '$0 ~ routename {print $1}')
     echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
@@ -178,10 +172,6 @@ deployservices() {
     HOST_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
     JARPATH="../deploy-repo/iom-ui-services.jar"
     CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
-    CFAPPS=$(cf apps)
-    apparray=$(cf apps | awk -v appname=${APP_NAME}_ '$0 ~ appname {print $1}')
-    echo " app array content " "${apparray[@]}"
-    echo "cf apps results:\n${CFAPPS}"
     echo "ROUTE_NAME: ${ROUTE_NAME}"
     APP_NAME_ACTIVE=$(cf apps | awk -v routename=${HOST_NAME} '$0 ~ routename {print $1}')
     echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
@@ -201,8 +191,6 @@ deployservices() {
     HOST_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
     JARPATH="../deploy-repo/iom-xfer-services.jar"
     CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
-    CFAPPS=$(cf apps)
-    echo "cf apps results:\n${CFAPPS}"
     echo "ROUTE_NAME: ${ROUTE_NAME}"
     APP_NAME_ACTIVE=$(cf apps | awk -v routename=${HOST_NAME} '$0 ~ routename {print $1}')
     echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
@@ -216,16 +204,13 @@ deployservices() {
     echo "----------------------------------------------------------------------------------------------------------------"
     echo "----------------------------------------------------------------------------------------------------------------"
 
-
-
     echo "deploy started  for iom-scheduler"
     MANIFESTFILE="./iom-scheduler/${ENVIRONMENT}.manifest.yml"
     APP_NAME=$(awk '/name:/ {print $NF}' "${MANIFESTFILE=}")
     HOST_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
     JARPATH="../deploy-repo/iom-scheduler.jar"
     CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
-    CFAPPS=$(cf apps)
-    echo "cf apps results:\n${CFAPPS}"
+
     echo "ROUTE_NAME: ${ROUTE_NAME}"
     APP_NAME_ACTIVE=$(cf apps | awk -v routename=${HOST_NAME} '$0 ~ routename {print $1}')
     echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
@@ -248,8 +233,6 @@ deployservices() {
     HOST_NAME=$(awk '/host:/ {print $NF}' "${MANIFESTFILE=}")
     JARPATH="../deploy-repo/iom-approval-service.jar"
     CF_DOMAIN="$(echo $CF_API | cut -d '-' -f 2)"
-    CFAPPS=$(cf apps)
-    echo "cf apps results:\n${CFAPPS}"
     echo "ROUTE_NAME: ${ROUTE_NAME}"
     APP_NAME_ACTIVE=$(cf apps | awk -v routename=${HOST_NAME} '$0 ~ routename {print $1}')
     echo "APP_NAME_ACTIVE: ${APP_NAME_ACTIVE}"
