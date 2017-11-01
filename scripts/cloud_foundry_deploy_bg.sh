@@ -29,6 +29,22 @@ logintoconcourse() {
 }
 
 
+delete_oldapps() {
+     BLUEAPP=$1
+     APPNAME=$2
+     REGEX="\\"${APPNAME}"_([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))"
+     array=($(cf apps | grep -iE ${REGEX} | cut -d ' ' -f1))
+     echo " app array content " ${apparray[@]}
+     for i in "${array[@]}";
+     do
+         if [[ $i ==  ${BLUEAPP} ]]; then
+              echo "not deleting the blue app "${i}""
+              else
+              echo "deleting the old apps older the 1 deployment "${i}" "
+              cf delete -f $i
+         fi
+     done
+}
 
 # BG Setup for services
 bg_deploy() {
@@ -45,15 +61,22 @@ GREEN="${BLUE}-B"
 TIMESTAPEDAPPNAME=${APP_NAME}_$(date +%Y-%m-%d-%H-%M)
 
 
+
 #Rename the active app with a timestamp , stop it and unmap the route
 if [[ "${APP_NAME_ACTIVE}" == "NA" ]]; then
     echo "No active app so going ahead with deployments"
-   else
+    else
     echo "Renaming the app and timestamping it "
     cf rename ${APP_NAME_ACTIVE} ${TIMESTAPEDAPPNAME}
     cf unmap-route ${TIMESTAPEDAPPNAME} apps-${CF_DOMAIN} -n ${HOSTNAME}
+    if [[ "${ENVIRONMENT}" == "prod"* ]]; then
+    cf unmap-route ${TIMESTAPEDAPPNAME} apps.homedepot.com -n ${HOSTNAME}
+    fi
     cf stop ${TIMESTAPEDAPPNAME}
 fi
+
+#delete the existing apps older pcf apps older than 1 deployment
+delete_oldapps ${TIMESTAPEDAPPNAME} ${APP_NAME}
 
 #Specify the full route name
 ROUTE_NAME=${HOSTNAME}.apps-${CF_DOMAIN}
