@@ -17,9 +17,11 @@ buildcopy(){
     ls -lrt ../../dist/$1/
 }
 
-buildcopy iom-ui
+if [[ ${UI_TYPE} == "IOM" ]]; then
+       buildcopy iom-ui
+   else
+       buildcopy iom-approval-ui
+fi
 
-cd ..
 
-buildcopy iom-approval-ui
 

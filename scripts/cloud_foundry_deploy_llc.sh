@@ -24,26 +24,30 @@ logintoconcourse() {
 
 
 deployui() {
-    # Deployment for iom ui
-    echo "deploy started  for iom ui"
-    cd ../code-repo/iom-ui
-    ls -ltr
-    mkdir -p dist  && chmod 777 dist
-    cp ../../deploy-repo/iom-ui/* ./dist/ -rf
-    ls -lrt ./dist/
-    ls -ltr
-    cf push -f ${ENVIRONMENT}.manifest.yml
-    echo "deploy completed  for iom ui"
-    # Deployment for approval ui
-    echo "deploy started  for iom approval ui"
-    cd ../iom-approval-ui
-    ls -ltr
-    mkdir -p dist  && chmod 777 dist
-    cp ../../deploy-repo/iom-approval-ui/* ./dist/ -rf
-    ls -lrt ./dist/
-    cf push -f ${ENVIRONMENT}.manifest.yml
-    echo "deploy completed  for iom approval ui"
-    echo "deployment of for the service will be done and the ui will be excluded"
+
+  if [[ ${UI_TYPE} == "IOM" ]]; then
+        # Deployment for iom ui
+        echo "deploy started  for iom ui"
+        cd ../code-repo/iom-ui
+        ls -ltr
+        mkdir -p dist  && chmod 777 dist
+        cp ../../deploy-repo/iom-ui/* ./dist/ -rf
+        ls -lrt ./dist/
+        ls -ltr
+        cf push -f ${ENVIRONMENT}.manifest.yml
+        echo "deploy completed  for iom ui"
+   else
+        # Deployment for approval ui
+        echo "deploy started  for iom approval ui"
+        cd ../code-repo/iom-approval-ui
+        ls -ltr
+        mkdir -p dist  && chmod 777 dist
+        cp ../../deploy-repo/iom-approval-ui/* ./dist/ -rf
+        ls -lrt ./dist/
+        cf push -f ${ENVIRONMENT}.manifest.yml
+        echo "deploy completed  for iom approval ui"
+        echo "deployment of for the service will be done and the ui will be excluded"
+   fi
 }
 
 
