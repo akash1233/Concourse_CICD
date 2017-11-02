@@ -275,8 +275,6 @@ logintoconcourse
 if [ -z "${DEPLOY_TYPE}" ]
 then
   echo "services being deployed as DEPLOY_TYPE value not set"
-   apparray=($(cf apps | awk -v appname="iom-approval-ui_" '$0 ~ appname {print $1}'))
-   echo "size of array "${#apparray[*]}" "
   deployservices
 elif [ "${DEPLOY_TYPE}" == "SERVICES" ]
 then
