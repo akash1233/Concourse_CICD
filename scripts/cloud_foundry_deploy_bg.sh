@@ -32,9 +32,9 @@ logintoconcourse() {
 delete_oldapps() {
      BLUEAPP=$1
      APPNAME=$2
-     apparray=$(cf apps | awk -v appname=${APPNAME}_ '$0 ~ appname {print $1}')
+     apparray=($(cf apps | awk -v appname=${APPNAME}_ '$0 ~ appname {print $1}'))
      echo "size of array "${#apparray[*]}" "
-     for i in "${apparray[*]}";
+     for i in ${apparray[*]};
      do
          if [[ "$i" ==  "${BLUEAPP}" ]]; then
               echo "not deleting the blue app "${i}""
@@ -275,6 +275,8 @@ logintoconcourse
 if [ -z "${DEPLOY_TYPE}" ]
 then
   echo "services being deployed as DEPLOY_TYPE value not set"
+   apparray=($(cf apps | awk -v appname="iom-approval-ui_" '$0 ~ appname {print $1}'))
+   echo "size of array "${#apparray[*]}" "
   deployservices
 elif [ "${DEPLOY_TYPE}" == "SERVICES" ]
 then
